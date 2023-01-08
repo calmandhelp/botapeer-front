@@ -1,31 +1,14 @@
 import Head from "next/head";
-import { Inter } from "@next/font/google";
 import axios from "axios";
 import Footer from "../components/Footer";
+import { css } from "@emotion/react";
+import Header from "../components/Header";
 
-const inter = Inter({ subsets: ["latin"] });
+const MainCss = css`
+  background: #f4f2ef;
+`;
 
 export default function Home() {
-  const handleLogin = async () => {
-    const response = await login();
-    localStorage.setItem("ACCESS_TOKEN", response.data.accessToken);
-  };
-
-  const login = (): any => {
-    return axios.post(
-      "http://localhost:8081/api/auth/signin",
-      {
-        usernameOrEmail: "yumi3119@dti.ad.jp",
-        password: "password",
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-  };
-
   return (
     <>
       <Head>
@@ -34,12 +17,9 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <Header />
+      <main css={MainCss}>
         <div>
-          <a href="http://localhost:8081/oauth2/authorization/google?redirect_uri=http://localhost:3000">
-            google
-          </a>
-          <button onClick={handleLogin}>ログイン</button>
           <button
             onClick={async () => {
               await axios.get("http://localhost:8081/api/users");
