@@ -1,8 +1,7 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "@next/font/google";
-import styles from "../styles/Home.module.css";
 import axios from "axios";
+import Footer from "../components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,8 +34,8 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
+      <main>
+        <div>
           <a href="http://localhost:8081/oauth2/authorization/google?redirect_uri=http://localhost:3000">
             google
           </a>
@@ -60,6 +59,7 @@ export default function Home() {
             ログアウト
           </button>
         </div>
+        <Footer />
       </main>
     </>
   );
