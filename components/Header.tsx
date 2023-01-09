@@ -14,18 +14,12 @@ const HeaderCss = css`
   background: #fff;
 `;
 
-// const accountIconWrapCss = css`
-//   position: absolute;
-//   top: 50%;
-//   right: 10px;
-//   transform: translate(0, -50%);
-//   font-size: 30px;
-//   cursor: pointer;
-// `;
-
-// const accountIconCss = css``;
-
-const AppBarCss = css``;
+const ToolBarCss =  {
+    "@media screen and (min-width:960px)": {
+      width: "960px", 
+      margin: "0 auto",
+    },
+}
 
 const Header = ({}) => {
   const [auth, setAuth] = React.useState(true);
@@ -54,9 +48,13 @@ const Header = ({}) => {
   return (
     <header css={HeaderCss}>
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar
+          position="static"
+          style={{ backgroundColor: "#fff", color: "#333333" }}
+        >
           <LoginModal isOpen={isOpen} onClose={handleModalClose} />
-          <Toolbar>
+          <Toolbar css={ToolBarCss}>
+            <div>ログマーク</div>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton

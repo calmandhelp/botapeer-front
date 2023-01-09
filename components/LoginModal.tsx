@@ -6,23 +6,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import Button from "./Button";
 import { GoogleLogin } from "react-google-login";
 import axios from "axios";
+import Box from "@mui/material/Box";
 
 const ModelContainer = css`
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 `;
 
-const ModelCss = css`
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  width: 320px;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  display: inline-block;
-`;
+const ModelCss = {
+  width: "320px",
+  position: "relative",
+  background: "#fff",
+  padding: "20px",
+  borderRadius: "10px",
+};
 
 const ModalContentCss = css`
   width: 100%;
@@ -102,56 +101,55 @@ const LoginModal = (props: Props) => {
         onClose={props.onClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
+        css={ModelContainer}
       >
-        <div css={ModelContainer}>
-          <div css={ModelCss}>
-            <CloseIcon
-              data-testid="CloseIcon"
-              onClick={props.onClose}
-              css={CloseButtonCss}
+        <Box sx={ModelCss}>
+          <CloseIcon
+            data-testid="CloseIcon"
+            onClick={props.onClose}
+            css={CloseButtonCss}
+          />
+          <h2 id="server-modal-title">ログイン</h2>
+          <p css={TextCss}>
+            Googleもしくはアカウント情報の入力でログインできます。
+          </p>
+          <a
+            href="http://localhost:8081/oauth2/authorization/google?redirect_uri=http://localhost:3000"
+            css={GoogleLinkCss}
+          >
+            <GoogleLogin
+              clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+              buttonText="Login with Google"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={"single_host_origin"}
+              css={GoogleCss}
             />
-            <h2 id="server-modal-title">ログイン</h2>
-            <p css={TextCss}>
-              Googleもしくはアカウント情報の入力でログインできます。
-            </p>
-            <a
-              href="http://localhost:8081/oauth2/authorization/google?redirect_uri=http://localhost:3000"
-              css={GoogleLinkCss}
-            >
-              <GoogleLogin
-                clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                buttonText="Login with Google"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
-                cookiePolicy={"single_host_origin"}
-                css={GoogleCss}
-              />
-            </a>
-            <p id="server-modal-description" css={ModalContentCss}>
-              ユーザーIDまたはEmail
-              <br />
-              <Input
-                type="text"
-                style={InputCss}
-                name="usernameOrEmail"
-                handleInput={(e) => setUserNameOrEmail(e.target.value)}
-                text={userNameOrEmail}
-              />
-              <br />
-              パスワード
-              <br />
-              <Input
-                type="password"
-                name="password"
-                handleInput={(e) => setPassword(e.target.value)}
-                text={password}
-              />
-            </p>
-            <div css={LoginButtonCss}>
-              <Button handleClick={handleLogin}>ログイン</Button>
-            </div>
+          </a>
+          <p id="server-modal-description" css={ModalContentCss}>
+            ユーザーIDまたはEmail
+            <br />
+            <Input
+              type="text"
+              style={InputCss}
+              name="usernameOrEmail"
+              handleInput={(e) => setUserNameOrEmail(e.target.value)}
+              text={userNameOrEmail}
+            />
+            <br />
+            パスワード
+            <br />
+            <Input
+              type="password"
+              name="password"
+              handleInput={(e) => setPassword(e.target.value)}
+              text={password}
+            />
+          </p>
+          <div css={LoginButtonCss}>
+            <Button handleClick={handleLogin}>ログイン</Button>
           </div>
-        </div>
+        </Box>
       </MaterialModal>
     </div>
   );

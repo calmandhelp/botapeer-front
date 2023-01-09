@@ -1,11 +1,17 @@
 import Head from "next/head";
 import axios from "axios";
-import Footer from "../components/Footer";
 import { css } from "@emotion/react";
-import Header from "../components/Header";
+import Image from "next/image";
+import { Layout } from "Layout/Layout";
 
-const MainCss = css`
-  background: #f4f2ef;
+const H3TitleCss = css`
+  padding: 5px 0 0 0;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+const ListCss = css`
+  display: flex;
 `;
 
 export default function Home() {
@@ -17,9 +23,54 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
-      <main css={MainCss}>
-        <div>
+      <Layout>
+        <>
+          <div>
+            <h2>みんなの生育記録</h2>
+          </div>
+          <div css={H3TitleCss}>
+            <h3>花の生育記録</h3>
+          </div>
+          <ul css={ListCss}>
+            <li>
+              <Image
+                src="/images/image1.jpg"
+                width={180}
+                height={180}
+                alt="植物"
+                css={{ objectFit: "cover" }}
+              />
+            </li>
+            <li>
+              <Image
+                src="/images/image1.jpg"
+                width={180}
+                height={180}
+                alt="植物"
+                css={{ objectFit: "cover" }}
+              />
+            </li>
+            <li>
+              <Image
+                src="/images/image1.jpg"
+                width={180}
+                height={180}
+                alt="植物"
+                css={{ objectFit: "cover" }}
+              />
+            </li>
+            <li>
+              <Image
+                src="/images/image1.jpg"
+                width={180}
+                height={180}
+                alt="植物"
+                css={{ objectFit: "cover" }}
+              />
+            </li>
+          </ul>
+          {/* ユーザー表示とログアウトのサンプルソース。後で使う[TODO] */}
+          {/* <div>
           <button
             onClick={async () => {
               await axios.get("http://localhost:8081/api/users");
@@ -38,9 +89,9 @@ export default function Home() {
           >
             ログアウト
           </button>
-        </div>
-        <Footer />
-      </main>
+        </div> */}
+        </>
+      </Layout>
     </>
   );
 }

@@ -1,0 +1,16 @@
+html,body {
+  height: 100%;
+  background: #f4f2ef;
+}
+ol, ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  list-style-type: none;
+}
+#__next {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
