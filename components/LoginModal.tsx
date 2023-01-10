@@ -5,8 +5,9 @@ import Input from "./Input";
 import CloseIcon from "@mui/icons-material/Close";
 import Button from "./Button";
 import { GoogleLogin } from "react-google-login";
-import axios from "axios";
+import Alert from 'react-s-alert';
 import Box from "@mui/material/Box";
+import { login } from '../util/ApiUtils';
 
 const ModelContainer = css`
   display: flex;
@@ -71,26 +72,18 @@ const LoginModal = (props: Props) => {
 
   const responseGoogle = () => {};
 
-  const handleLogin = (): any => {
-    return axios
-      .post(
-        "http://localhost:8081/api/auth/signin",
-        {
-          usernameOrEmail: userNameOrEmail,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+  const handleLogin = () => {
+    const loginRequest = {
+      usernameOrEmail: userNameOrEmail,
+      password: password,
+    }
+    login(loginRequest)
       .then((res) => {
         localStorage.setItem("ACCESS_TOKEN", res.data.accessToken);
-        alert("ログインに成功しました。");
+        Alert.success("ログインに成功しました。");
       })
       .catch((error) => {
-        alert("ログインできませんでした。");
+        Alert.error("ログインできませんでした。");
       });
   };
 
