@@ -37,12 +37,6 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    checkSignIn: (state) =>{
-      const accessToken = localStorage.getItem("ACCESS_TOKEN");
-      if(accessToken) {
-        state.isLogin = true;
-      }
-    },
     logout: (state) =>{
       localStorage.removeItem("ACCESS_TOKEN");
       state.isLogin = false;
