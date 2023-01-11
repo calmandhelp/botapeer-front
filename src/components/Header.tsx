@@ -55,7 +55,7 @@ const Header = ({}) => {
     <header css={HeaderCss}>
       <Box sx={{ flexGrow: 1 }}>
         <AppBar
-          position="static"
+          position="relative"
           style={{ backgroundColor: "#fff", color: "#333333" }}
         >
           <LoginModal isOpen={isOpen} onClose={handleModalClose} />

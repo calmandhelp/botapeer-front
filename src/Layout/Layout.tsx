@@ -12,6 +12,7 @@ type Props = {
 }
 
 const MainCss = css`
+  background: #f4f2ef;
   flex: 1;
 `;
 
