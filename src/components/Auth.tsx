@@ -18,7 +18,7 @@ const Auth = ({ children }: Props) => {
       if (!auth.isLogin) {
         router.replace("/");
       }
-    }, [router,auth]);
+    }, [router, auth]);
 
     return (
     <>{auth.isLogin ? children : <></>}</>

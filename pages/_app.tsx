@@ -2,8 +2,9 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppPropsWithLayout } from "next/app";
 import "../styles/global.css";
 import theme from "../styles/Theme";
-import { store } from 'redux/store/store'
+import { store, persistor  } from 'redux/store/store'
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
@@ -11,10 +12,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return getLayout(
     <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+    </PersistGate>
     </Provider>
   );
 }

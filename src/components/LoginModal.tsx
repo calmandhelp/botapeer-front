@@ -8,6 +8,7 @@ import { GoogleLogin } from "react-google-login";
 import Box from "@mui/material/Box";
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { selectAuth, signIn } from '../redux/slice/authSlice';
+import { useRouter } from 'next/router';
 
 const ModelContainer = css`
   display: flex;
@@ -70,6 +71,7 @@ const LoginModal = (props: Props) => {
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const auth = useAppSelector(selectAuth);
 
   const responseGoogle = () => {};
@@ -79,7 +81,9 @@ const LoginModal = (props: Props) => {
       usernameOrEmail: userNameOrEmail,
       password: password,
     }
-    dispatch(signIn(loginRequest));
+    dispatch(signIn(loginRequest)).then(() => {
+        router.replace("/account");
+      });
   };
 
   return (

@@ -7,8 +7,8 @@ export type AuthData = {
   isLogin: boolean,
   accessToken: string,
   userId?: number,
-  status: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
+  status: "idle" | "pending" | "succeeded" | "failed",
+  error: undefined | string
 };
 
 const initialState: AuthData = {

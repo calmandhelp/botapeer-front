@@ -22,24 +22,6 @@ export default function Home() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const isFirstRender = useRef(false)
-
-  useEffect(() => { 
-    isFirstRender.current = true
-  }, [])
-
-  useEffect(() => {
-    if(isFirstRender.current) { 
-      isFirstRender.current = false 
-    } else if(auth.isLogin) {
-      router.replace("/account");
-    }
-  },[auth.isLogin, router])
-
-  useEffect(() => {
-    dispatch(checkSignIn())
-  },[dispatch])
-
 
   return (
     <>
