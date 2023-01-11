@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
 import { Modal as MaterialModal } from "@mui/material";
 import { useState } from "react";
-import Input from "./Input";
+import Input from "components/Input";
 import CloseIcon from "@mui/icons-material/Close";
-import Button from "./Button";
+import Button from "components/Button";
 import { GoogleLogin } from "react-google-login";
 import Alert from 'react-s-alert';
 import Box from "@mui/material/Box";
-import { login } from '../util/ApiUtils';
+import { login } from 'util/ApiUtils';
 
 const ModelContainer = css`
   display: flex;
