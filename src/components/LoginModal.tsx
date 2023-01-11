@@ -7,7 +7,8 @@ import Button from "components/Button";
 import { GoogleLogin } from "react-google-login";
 import Alert from 'react-s-alert';
 import Box from "@mui/material/Box";
-import { login } from 'util/ApiUtils';
+import { useAppDispatch, useAppSelector } from '../redux/hook';
+import { selectAuth, signIn } from '../redux/slice/authSlice';
 
 const ModelContainer = css`
   display: flex;
@@ -69,6 +70,8 @@ type Props = {
 const LoginModal = (props: Props) => {
   const [userNameOrEmail, setUserNameOrEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector(selectAuth);
 
   const responseGoogle = () => {};
 
@@ -77,14 +80,7 @@ const LoginModal = (props: Props) => {
       usernameOrEmail: userNameOrEmail,
       password: password,
     }
-    login(loginRequest)
-      .then((res) => {
-        localStorage.setItem("ACCESS_TOKEN", res.data.accessToken);
-        Alert.success("ログインに成功しました。");
-      })
-      .catch((error) => {
-        Alert.error("ログインできませんでした。");
-      });
+    dispatch(signIn(loginRequest));
   };
 
   return (

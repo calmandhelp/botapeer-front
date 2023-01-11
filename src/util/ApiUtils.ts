@@ -1,4 +1,4 @@
-import { API_BASE_URL, ACCESS_TOKEN } from 'constants/ApiConstants';
+import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
 
 const request = (options: any) => {
   const headers = new Headers({
@@ -23,7 +23,7 @@ const request = (options: any) => {
   );
 };
 
-export function login(loginRequest: LoginRequest) {
+export function login(loginRequest: LoginRequest): Promise<LoginResponse> {
   return request({
       url: API_BASE_URL + "/api/auth/signin",
       method: 'POST',
@@ -42,7 +42,12 @@ export const getCurrentUser = () => {
   });
 }
 
-type LoginRequest = {
+export type LoginRequest = {
   usernameOrEmail: string,
   password: string
+}
+
+export type LoginResponse = {
+  accessToken: string,
+  tokenType: string
 }
