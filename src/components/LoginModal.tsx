@@ -86,6 +86,13 @@ const LoginModal = (props: Props) => {
       });
   };
 
+  const handleKeyDown = (e: any) => {
+    if(e.key == "Enter") {
+      console.log("enter");
+      handleLogin();
+    }
+  }
+
   return (
     <div>
       <MaterialModal
@@ -127,6 +134,7 @@ const LoginModal = (props: Props) => {
               name="usernameOrEmail"
               handleInput={(e) => setUserNameOrEmail(e.target.value)}
               text={userNameOrEmail}
+              onKeyDown={(e) =>handleKeyDown(e)}
             />
             <br />
             パスワード
@@ -136,6 +144,7 @@ const LoginModal = (props: Props) => {
               name="password"
               handleInput={(e) => setPassword(e.target.value)}
               text={password}
+              onKeyDown={(e) =>handleKeyDown(e)}
             />
           </p>
           <div css={LoginButtonCss}>

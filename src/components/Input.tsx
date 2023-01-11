@@ -17,6 +17,7 @@ type Props = {
   name: string;
   handleInput: (e: any) => void;
   text: string;
+  onKeyDown?: (e: any) => void;
 };
 
 const Input = (props: Props) => {
@@ -29,6 +30,7 @@ const Input = (props: Props) => {
       value={props.text}
       onChange={props.handleInput}
       name={props.name}
+      onKeyDown={props.onKeyDown}
     />
   );
 };
