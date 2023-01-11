@@ -10,8 +10,8 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import { useRouter } from 'next/router'
-import { useAppSelector } from "redux/hook";
-import { selectAuth } from "redux/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "redux/hook";
+import { logout, selectAuth } from "redux/slice/authSlice";
 import Link from "next/link";
 
 const HeaderCss = css`
@@ -29,6 +29,7 @@ const Header = ({}) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
 
   // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +93,7 @@ const Header = ({}) => {
               {auth.isLogin ? 
               <Box>
               <MenuItem onClick={() => router.replace("/account")}>アカウント</MenuItem>
-              <MenuItem onClick={() => {}}>ログアウト</MenuItem>
+              <MenuItem onClick={() => dispatch(logout())}>ログアウト</MenuItem>
               </Box>
               : 
               <Box>
