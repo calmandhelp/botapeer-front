@@ -18,10 +18,6 @@ const ListCss = css`
 
 export default function Home() {
 
-  const auth = useAppSelector(selectAuth);
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
   return (
     <>
       <Head>
