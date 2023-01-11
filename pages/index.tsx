@@ -1,8 +1,11 @@
 import Head from "next/head";
-import axios from "axios";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import { Layout } from "Layout/Layout";
+import { useAppSelector } from "redux/hook";
+import { selectAuth } from "redux/slice/authSlice";
+import { useEffect } from "react";
+import { useRouter } from 'next/router';
 
 const H3TitleCss = css`
   padding: 5px 0 0 0;
@@ -15,6 +18,16 @@ const ListCss = css`
 `;
 
 export default function Home() {
+
+  const auth = useAppSelector(selectAuth);
+  const router = useRouter();
+
+  useEffect(() => {
+    if(auth.isLogin) {
+      router.replace("/account");
+    }
+  },[auth, router])
+
   return (
     <>
       <Head>

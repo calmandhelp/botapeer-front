@@ -1,11 +1,15 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import Header from "components/Header";
 import Footer from "components/Footer";
 import { css } from "@emotion/react";
 
-type LayoutProps = Required<{
-  readonly children: ReactElement;
-}>;
+// type LayoutProps = Required<{
+//   readonly children: ReactElement;
+// }>;
+
+type Props = {
+  children?: ReactNode
+}
 
 const MainCss = css`
   flex: 1;
@@ -27,7 +31,7 @@ const ContainerCss = {
   },
 };
 
-export const Layout = ({ children }: LayoutProps) => (
+export const Layout = ({ children }: Props) => (
   <>
     <Header />
     <main css={MainCss}>

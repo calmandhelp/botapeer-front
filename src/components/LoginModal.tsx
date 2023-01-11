@@ -5,7 +5,6 @@ import Input from "components/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import Button from "components/Button";
 import { GoogleLogin } from "react-google-login";
-import Alert from 'react-s-alert';
 import Box from "@mui/material/Box";
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { selectAuth, signIn } from '../redux/slice/authSlice';

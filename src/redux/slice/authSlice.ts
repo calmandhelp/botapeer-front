@@ -3,12 +3,14 @@ import type { RootState } from '../store/store'
 import { login, LoginRequest } from 'util/apiUtils';
 
 export type AuthData = {
+  isLogin: boolean,
   accessToken: string,
   status: "idle" | "pending" | "succeeded" | "failed";
   error: undefined | string;
 };
 
 const initialState: AuthData = {
+  isLogin: false,
   accessToken: "",
   status: "idle",
   error: undefined,
@@ -30,15 +32,18 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signIn.pending, (state) => {
       state.status = "pending";
+      state.isLogin = false;
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
       localStorage.setItem("ACCESS_TOKEN",action.payload.accessToken)
       state.accessToken = action.payload.accessToken;
       state.status = "succeeded";
+      state.isLogin = true;
     });
     builder.addCase(signIn.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+      state.isLogin = false;
     });
   }
 })

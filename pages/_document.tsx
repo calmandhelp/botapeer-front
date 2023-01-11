@@ -7,9 +7,6 @@ import Document, {
 } from "next/document";
 import React from "react";
 import { ServerStyleSheets } from "@material-ui/core/styles";
-import Header from "components/Header";
-import Footer from "components/Footer";
-
 
 export default class MyDocument extends Document {
   render() {

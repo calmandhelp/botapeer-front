@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import * as React from "react";
-import LoginModal from "./LoginModal";
+import React, {useEffect} from "react";
+import LoginModal from "components/LoginModal";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
@@ -9,6 +9,10 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useState } from "react";
 import Box from "@mui/material/Box";
+import { useRouter } from 'next/router'
+import { useAppSelector } from "redux/hook";
+import { selectAuth } from "redux/slice/authSlice";
+import Link from "next/link";
 
 const HeaderCss = css`
   background: #fff;
@@ -22,13 +26,14 @@ const ToolBarCss =  {
 }
 
 const Header = ({}) => {
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const auth = useAppSelector(selectAuth);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setAuth(event.target.checked);
+  // };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -54,7 +59,7 @@ const Header = ({}) => {
         >
           <LoginModal isOpen={isOpen} onClose={handleModalClose} />
           <Toolbar css={ToolBarCss}>
-            <div>ログマーク</div>
+            <Link href="/">ログマーク</Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
@@ -84,8 +89,17 @@ const Header = ({}) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              {auth.isLogin ? 
+              <Box>
+              <MenuItem onClick={() => router.replace("/account")}>アカウント</MenuItem>
+              <MenuItem onClick={() => {}}>ログアウト</MenuItem>
+              </Box>
+              : 
+              <Box>
               <MenuItem onClick={() => setIsOpen(true)}>ログイン</MenuItem>
               <MenuItem onClick={handleRegister}>会員登録</MenuItem>
+              </Box>
+              }
             </Menu>
           </Toolbar>
         </AppBar>
