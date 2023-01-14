@@ -65,10 +65,11 @@ const GoogleLinkCss = css`
 type Props = {
   onClose: () => void;
   isOpen: boolean;
+  handleLogin: (usernameOrEmail: string, password: string) => void;
 };
 
 const LoginModal = (props: Props) => {
-  const [userNameOrEmail, setUserNameOrEmail] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -76,20 +77,9 @@ const LoginModal = (props: Props) => {
 
   const responseGoogle = () => {};
 
-  const handleLogin = () => {
-    const loginRequest = {
-      usernameOrEmail: userNameOrEmail,
-      password: password,
-    }
-    dispatch(signIn(loginRequest)).then(() => {
-        router.replace("/account");
-      });
-  };
-
   const handleKeyDown = (e: any) => {
     if(e.key == "Enter") {
-      console.log("enter");
-      handleLogin();
+      props.handleLogin(usernameOrEmail, password)
     }
   }
 
@@ -132,8 +122,8 @@ const LoginModal = (props: Props) => {
               type="text"
               style={InputCss}
               name="usernameOrEmail"
-              handleInput={(e) => setUserNameOrEmail(e.target.value)}
-              text={userNameOrEmail}
+              handleInput={(e) => setUsernameOrEmail(e.target.value)}
+              text={usernameOrEmail}
               onKeyDown={(e) =>handleKeyDown(e)}
             />
             <br />
@@ -148,7 +138,7 @@ const LoginModal = (props: Props) => {
             />
           </p>
           <div css={LoginButtonCss}>
-            <Button handleClick={handleLogin}>ログイン</Button>
+            <Button handleClick={() => props.handleLogin(usernameOrEmail, password)}>ログイン</Button>
           </div>
         </Box>
       </MaterialModal>

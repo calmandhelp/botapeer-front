@@ -1,9 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userReducer from '../slice/userSlice'
-import authReducer from '../slice/authSlice'
+import userReducer from 'redux/slice/userSlice'
+import authReducer from 'redux/slice/authSlice'
 import logger from 'redux-logger'
-import { ThunkAction } from '@reduxjs/toolkit';
-import { Action } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {combineReducers} from 'redux';

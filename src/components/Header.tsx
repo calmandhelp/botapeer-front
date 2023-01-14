@@ -10,9 +10,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import { useAppDispatch, useAppSelector } from "redux/hook";
 import { logout, selectAuth } from "redux/slice/authSlice";
 import Link from "next/link";
+import { signIn } from '../redux/slice/authSlice';
 
 const HeaderCss = css`
   background: #fff;
@@ -32,10 +34,6 @@ const Header = ({}) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
 
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setAuth(event.target.checked);
-  // };
-
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,6 +49,27 @@ const Header = ({}) => {
     setIsOpen(false);
   };
 
+  const handleLogout = () => {
+    router.replace("/?logout=true").then(() => {
+        dispatch(logout());
+      })
+  }
+
+  const handleLoginMenu = () => {
+    setAnchorEl(null);
+    setIsOpen(true);
+  }
+
+  const handleLogin = (usernameOrEmail: string, password: string) => {
+    const loginRequest = {
+      usernameOrEmail,
+      password,
+    }
+    dispatch(signIn(loginRequest)).then(() => {
+        router.replace("/account?login=true");
+      });
+  };
+
   return (
     <header css={HeaderCss}>
       <Box sx={{ flexGrow: 1 }}>
@@ -58,9 +77,13 @@ const Header = ({}) => {
           position="relative"
           style={{ backgroundColor: "#fff", color: "#333333" }}
         >
-          <LoginModal isOpen={isOpen} onClose={handleModalClose} />
+          <LoginModal 
+            isOpen={isOpen} 
+            onClose={handleModalClose}
+            handleLogin={handleLogin}
+          />
           <Toolbar css={ToolBarCss}>
-            <Link href="/">ログマーク</Link>
+            <Link href="/"><a><Image src="/images/logo.png" width="132px" height="37px" alt="" /></a></Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
@@ -93,11 +116,11 @@ const Header = ({}) => {
               {auth.isLogin ? 
               <Box>
               <MenuItem onClick={() => router.replace("/account")}>アカウント</MenuItem>
-              <MenuItem onClick={() => dispatch(logout())}>ログアウト</MenuItem>
+              <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
               </Box>
               : 
               <Box>
-              <MenuItem onClick={() => setIsOpen(true)}>ログイン</MenuItem>
+              <MenuItem onClick={handleLoginMenu}>ログイン</MenuItem>
               <MenuItem onClick={handleRegister}>会員登録</MenuItem>
               </Box>
               }

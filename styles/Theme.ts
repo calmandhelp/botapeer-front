@@ -8,8 +8,14 @@ const theme = createTheme({
       md: 960,
       lg: 1100,
       xl: 1200
+    },
+  },
+  palette: {
+    primary: {
+      main: '#5EB476',
     }
   }
 });
+
 
 export default theme

@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import axios from 'axios'
-
+ 
 // Define a type for the slice state
 const userDataExample = {
   id: 0,
@@ -10,7 +9,10 @@ const userDataExample = {
   email: "",
   status: false,
   present: false,
-  password: ""
+  password: "",
+  coverImage: "",
+  profileImage: "",
+  description: "",
 }
 
 export type UserData = {
@@ -35,19 +37,8 @@ export const fetchUserById = createAsyncThunk(
 
 export const userSlice = createSlice({
   name: 'user',
-  // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    // increment: (state) => {
-    //   state.value += 1
-    // },
-    // decrement: (state) => {
-    //   state.value -= 1
-    // },
-    // // Use the PayloadAction type to declare the contents of `action.payload`
-    // incrementByAmount: (state, action: PayloadAction<number>) => {
-    //   state.value += action.payload
-    // },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserById.pending, (state) => {

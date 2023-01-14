@@ -1,18 +1,28 @@
-import { ReactElement, ReactNode } from "react";
+import React, { ReactNode, useState, useEffect } from "react";
 import Header from "components/Header";
 import Footer from "components/Footer";
 import { css } from "@emotion/react";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import { useRouter } from 'next/router'
+import BreadCrumbs, { BreadCrumbProps } from "components/BreadCrumbs";
 
-// type LayoutProps = Required<{
-//   readonly children: ReactElement;
-// }>;
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 type Props = {
   children?: ReactNode
+  breadCrumbProps?: BreadCrumbProps
 }
 
 const MainCss = css`
-  background: #f4f2ef;
+  display: flex;
+  flex-direction: column;
+  background: #e7ebe7;
   flex: 1;
 `;
 
@@ -24,22 +34,58 @@ const ContentCss = css`
 `;
 const ContainerCss = {
   display: "flex",
-  padding: "32px 0",
   height: "100%",
   "@media screen and (min-width:960px)": {
     width: "960px",
-    margin: "0 auto",
+    margin: "0 auto 32px auto",
   },
 };
 
-export const Layout = ({ children }: Props) => (
-  <>
-    <Header />
-    <main css={MainCss}>
-      <div css={ContainerCss}>
-        <div css={ContentCss}>{children}</div>
-      </div>
-    </main>
-    <Footer />
-  </>
-);
+const breadCss = css `
+  margin: 32px auto;
+  width: 960px;
+`
+
+export const Layout = ({ children, breadCrumbProps }: Props) => {
+
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const login = router.query.login;
+  const logout = router.query.logout;
+
+  useEffect(()=>{
+    if(login || logout) {
+      setOpen(true);
+    }
+  },[login, logout])
+
+  return (
+    <>
+      <Header />
+      <Snackbar
+        open={open}
+        onClose={() => setOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setOpen(false)}
+          severity="success"
+          sx={{ width: '100%', background: "#5EB476", color: "#fff", fontWeight: "bold" }}>
+          { login ? "ログインしました" : <></>}
+          { logout ? "ログアウトしました" : <></>}
+        </Alert>
+      </Snackbar>
+      <main css={MainCss}>
+        <div css={breadCss}>
+          {breadCrumbProps ? 
+          <BreadCrumbs {...breadCrumbProps} />: ""}
+        </div>
+        <div css={ContainerCss}>
+          <div css={ContentCss}>{children}</div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  )
+
+};

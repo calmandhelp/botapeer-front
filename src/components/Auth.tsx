@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { ACCESS_TOKEN } from 'constants/apiConstants';
 import { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useAppSelector } from 'redux/hook';
