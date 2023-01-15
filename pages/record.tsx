@@ -5,18 +5,14 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById, UserData, updateUser } from "redux/slice/userSlice";
+import { selectUser, fetchUserById } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage } from "constants/pageConstants";
+import { accountPage, recordPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
 import Button from "components/Button";
-import TextArea from "components/TextArea";
-import { userAgentFromString } from "next/server";
-import { UserRequest } from "util/userApiUtils";
-import Image from "next/image";
 
 const WrapCss = css`
   height: 100%;
@@ -41,12 +37,7 @@ const InputsCss = css`
   flex: 1;
 `
 
-const CoverCss = css`
-  height: 250px;
-  width: 100%;
-`
-
-const AccountUpdate = ({}) => {
+const Record = ({}) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -54,9 +45,14 @@ const AccountUpdate = ({}) => {
   const user = useAppSelector(selectUser);
   const login = router.query.login;
   const logout = router.query.logout;
-  const [name, setName] = useState<string>();
-  const [description, setDescription] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState<Date | null>(new Date());
+
+  useEffect(()=>{
+    if(login || logout) {
+      setOpen(true);
+    }
+  },[login, logout])
 
   useEffect(() => {
     const userId = auth.userId;
@@ -67,13 +63,6 @@ const AccountUpdate = ({}) => {
     }
   },[auth.userId, dispatch])
 
-  useEffect(() => {
-    if(user.status == "succeeded") {
-      setName(user?.data?.name);
-      setDescription(user?.data?.description);
-    }
-  },[user])
-
   const childPages = [
     {
     href: accountPage.path,
@@ -82,60 +71,39 @@ const AccountUpdate = ({}) => {
   ]
 
   const currentPage = {
-    label: accountUpdatePage.text
+    label: recordPage.text
   }
-
   const breadCrumb = {
     childPages: childPages,
     currentPage: currentPage
   }
 
-  const userRequest: UserRequest = {
-    id: auth.userId,
-    name,
-    description,
-    password
-  }
-
   const handleClick = () => {
-    dispatch(updateUser(userRequest)).then(() => {
-      setPassword("");
-      alert("更新完了しました。");
-    });
+
   }
 
   return (
     <Auth>
       <Layout breadCrumbProps={breadCrumb}>
         <div css={WrapCss}>
-        <h2>アカウント情報更新</h2>
+        <h2>{recordPage.text}</h2>
         <Divider />
          <div css={InnerCss}>
           <div css={InputsCss}>
-            <div css={CoverCss}>
-              <Image src={user.data?.profileImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
-            </div>
             <Input
-            labelText="名前"
+            labelText="生育記録のタイトル"
             type="text"
-            handleInput={(e) => setName(e.target.value)}
-            text={name ?? ""}
+            handleInput={(e) => setTitle(e.target.value)}
+            text={title}
             /><br /><br />
-            <TextArea
-            labelText="説明"
-            type="text"
-            handleInput={(e) => setDescription(e.target.value)}
-            text={description ?? ""}
-            /><br /><br />
-            <Input
-            labelText="パスワード"
-            type="password"
-            handleInput={(e) => setPassword(e.target.value)}
-            text={password ?? ""}
-            /><br /><br />
+            <DatePicker
+            handleChange={(date) => setDate(date)}
+            value={date}
+            labelText="日付"
+            />
           </div>
           <div css={submitAreaCss}> 
-            <Button handleClick={handleClick}>更新</Button>
+            <Button handleClick={handleClick}>投稿</Button>
           </div>
          </div>
         </div>
@@ -144,4 +112,4 @@ const AccountUpdate = ({}) => {
   );
 };
 
-export default AccountUpdate;
+export default Record;

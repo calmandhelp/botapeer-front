@@ -13,6 +13,7 @@ import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import { selectUser, fetchUserById } from "redux/slice/userSlice";
 import Divider from "style/Divider";
+import { accountPage, accountUpdatePage, recordPage } from "constants/pageConstants";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -162,15 +163,15 @@ const Account = ({}) => {
       <div css={AccountInfoCss}>
         <div css={CoverCss}>
           <div css={bgCircleCss}>
-          <div css={CircleCss}>
-            <Image src={user.data?.coverImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
-          </div>
+            <div css={CircleCss}>
+              <Image src={user.data?.coverImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
+            </div>
           </div>
             <Image src={user.data?.profileImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
           </div>
           <div css={ProfileCss}>
             <div css={EditCss}>
-              <SimpleButton handleClick={() => router.replace("/account_update")}>編集</SimpleButton>
+              <SimpleButton handleClick={() => router.replace(accountUpdatePage.path)}>編集</SimpleButton>
             </div>
             <div css={InfoCss}>
               <span>{user.data?.name}</span><br />
@@ -198,7 +199,7 @@ const Account = ({}) => {
           <div css={ContentCss}>
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
-            <SimpleButton>生育記録追加</SimpleButton>
+            <SimpleButton handleClick={() => router.replace(recordPage.path)}>{recordPage.text}</SimpleButton>
           </div>
           <p css={FlowerCss}>植物を追加<AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></p>
           <ul css={ListUlCss}>

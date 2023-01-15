@@ -2,6 +2,7 @@ import { css, Interpolation, Theme } from "@emotion/react";
 import React, { Children, ReactNode } from "react";
 
 const InputCss = css`
+  min-width: 120px;
   background: #5eb476;
   border-radius: 10px;
   border: none;

@@ -2,9 +2,6 @@ import Head from "next/head";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import { Layout } from "Layout/Layout";
-import { useAppDispatch, useAppSelector } from "redux/hook";
-import { selectAuth } from "redux/slice/authSlice";
-import { useRouter } from 'next/router';
 
 const H3TitleCss = css`
   padding: 5px 0 0 0;

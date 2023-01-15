@@ -27,7 +27,7 @@ const ModelCss = {
 
 const ModalContentCss = css`
   width: 100%;
-  padding-bottom: 16px;
+  padding: 16px 0;
   box-sizing: border-box;
 `;
 
@@ -116,22 +116,18 @@ const LoginModal = (props: Props) => {
             />
           </a>
           <p id="server-modal-description" css={ModalContentCss}>
-            ユーザーIDまたはEmail
-            <br />
             <Input
+              labelText="ユーザーIDまたはEmail"
               type="text"
               style={InputCss}
-              name="usernameOrEmail"
               handleInput={(e) => setUsernameOrEmail(e.target.value)}
               text={usernameOrEmail}
               onKeyDown={(e) =>handleKeyDown(e)}
             />
             <br />
-            パスワード
-            <br />
             <Input
+              labelText="パスワード"
               type="password"
-              name="password"
               handleInput={(e) => setPassword(e.target.value)}
               text={password}
               onKeyDown={(e) =>handleKeyDown(e)}

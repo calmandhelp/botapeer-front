@@ -6,7 +6,7 @@ import jwtDecode from 'jwt-decode';
 export type AuthData = {
   isLogin: boolean,
   accessToken: string,
-  userId?: number,
+  userId: number,
   status: "idle" | "pending" | "succeeded" | "failed",
   error: undefined | string
 };
@@ -14,7 +14,7 @@ export type AuthData = {
 const initialState: AuthData = {
   isLogin: false,
   accessToken: "",
-  userId: undefined,
+  userId: 0,
   status: "idle",
   error: undefined,
 };

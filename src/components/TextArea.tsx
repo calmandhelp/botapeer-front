@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 
 const InputCss = css`
   width: 100%;
+  min-height: 100px;
   display: block;
   background: #ededed;
   border: none;
@@ -25,21 +26,21 @@ type Props = {
   labelText?: string;
 };
 
-const Input = (props: Props) => {
+const TextArea = (props: Props) => {
 
   return (
     <>
     <div css={LabelTextCss}>{props?.labelText}</div>
-    <input
-      type={props.type}
+    <textarea
       css={InputCss}
       value={props.text}
       onChange={props.handleInput}
       name={props.name}
       onKeyDown={props.onKeyDown}
+      maxLength={250}
     />
     </>
   );
 };
 
-export default Input;
+export default TextArea;
