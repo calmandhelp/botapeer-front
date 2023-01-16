@@ -1,5 +1,7 @@
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
-import { request } from 'util/apiUtils';
+import jwtDecode from 'jwt-decode';
+import { Token } from 'redux/slice/authSlice';
+import { multiPartRequest, request } from 'util/apiUtils';
 
 export function fetchUserByIdBase(userId: number): Promise<UserResponse> {
   return request({
@@ -8,11 +10,15 @@ export function fetchUserByIdBase(userId: number): Promise<UserResponse> {
   });
 }
 
-export function updateUserBase(userRequest: UserRequest): Promise<UserResponse> {
-  return request({
-      url: API_BASE_URL + "/api/users/" + userRequest.id,
-      method: 'POST',
-      body: JSON.stringify(userRequest)
+export function updateUserBase(formData: FormData): Promise<UserResponse> {
+  const accessToken = localStorage.getItem(ACCESS_TOKEN) ?? "";
+  const token: Token = jwtDecode(accessToken)
+  const id = token.sub;
+
+  return multiPartRequest({
+    url: API_BASE_URL + "/api/users/" + id,
+    method: 'POST',
+    body: formData
   });
 }
 

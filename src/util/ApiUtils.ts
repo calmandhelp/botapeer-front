@@ -2,10 +2,7 @@ import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
 
 export const request = (options: any) => {
 
-  const httpHeaders = {
-    'Content-Type': 'application/json',
-  }
-  const headers = new Headers(httpHeaders)
+  const headers = new Headers({'Content-Type': 'application/json'})
   
   const token = localStorage.getItem(ACCESS_TOKEN);
   headers.append('Authorization', 'Bearer ' + token)
@@ -13,6 +10,28 @@ export const request = (options: any) => {
   const defaults = {headers: headers};
   options = Object.assign({}, defaults, options);
 
+  return fetch(options.url, options)
+  .then(response => 
+      response.json().then(json => {
+          if(!response.ok) {
+              return Promise.reject(json);
+          }
+          return json;
+      })
+  );
+};
+
+export const multiPartRequest = (options: any) => {
+  const httpHeaders = {}
+
+  const headers = new Headers(httpHeaders)
+  
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  headers.append('Authorization', 'Bearer ' + token)
+  
+  const defaults = {headers: headers};
+  options = Object.assign({}, defaults, options);
+  
   return fetch(options.url, options)
   .then(response => 
       response.json().then(json => {

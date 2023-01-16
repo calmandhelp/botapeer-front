@@ -13,7 +13,7 @@ import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import { selectUser, fetchUserById } from "redux/slice/userSlice";
 import Divider from "style/Divider";
-import { accountPage, accountUpdatePage, recordPage } from "constants/pageConstants";
+import { accountPage, accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -164,9 +164,9 @@ const Account = ({}) => {
         <div css={CoverCss}>
           <div css={bgCircleCss}>
             <div css={CircleCss}>
-              <Image src={user.data?.coverImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
+              <Image src={user.data?.coverImage ?? ""} objectFit='cover' alt="cover image" layout='fill' />
             </div>
-          </div>
+          </div> 
             <Image src={user.data?.profileImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
           </div>
           <div css={ProfileCss}>
@@ -201,7 +201,8 @@ const Account = ({}) => {
             <h2>持っている植物 🪴</h2>
             <SimpleButton handleClick={() => router.replace(recordPage.path)}>{recordPage.text}</SimpleButton>
           </div>
-          <p css={FlowerCss}>植物を追加<AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></p>
+          <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.replace(plantCreatePage.path)} css={{cursor: "pointer"}}>
+            <AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></a></p>
           <ul css={ListUlCss}>
             <li>
               <Image

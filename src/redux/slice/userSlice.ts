@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import axios from 'axios'
 import { fetchUserByIdBase, updateUserBase, UserRequest, UserResponse } from 'util/userApiUtils';
 
 export type UserData = {
@@ -25,7 +24,7 @@ export const fetchUserById = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   'auth/updateUserStatus',
-  async (data: UserRequest) => {
+  async (data: FormData) => {
     const response = await updateUserBase(data);
     return response
   }
