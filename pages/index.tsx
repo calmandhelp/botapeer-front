@@ -2,6 +2,7 @@ import Head from "next/head";
 import { css } from "@emotion/react";
 import Image from "next/image";
 import { Layout } from "Layout/Layout";
+import { Alert } from "@mui/material";
 
 const H3TitleCss = css`
   padding: 5px 0 0 0;

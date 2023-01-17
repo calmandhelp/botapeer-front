@@ -3,16 +3,9 @@ import Header from "components/Header";
 import Footer from "components/Footer";
 import { css } from "@emotion/react";
 import Snackbar from '@mui/material/Snackbar';
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useRouter } from 'next/router'
 import BreadCrumbs, { BreadCrumbProps } from "components/BreadCrumbs";
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import Alert from "components/Alert";
 
 type Props = {
   children?: ReactNode
@@ -52,9 +45,20 @@ export const Layout = ({ children, breadCrumbProps }: Props) => {
   const router = useRouter();
   const login = router.query.login;
   const logout = router.query.logout;
+  const expired = router.query.expired;
+  const [message, setMessage] = useState('');
 
   useEffect(()=>{
-    if(login || logout) {
+    if(login) {
+      setMessage("ログインしました");
+      setOpen(true);
+    }
+    if(logout) {
+      setMessage("ログアウトしました");
+      setOpen(true);
+    }
+    if(expired) {
+      setMessage("長時間ログイン状態が続いたためログアウトしました");
       setOpen(true);
     }
   },[login, logout])
@@ -62,19 +66,12 @@ export const Layout = ({ children, breadCrumbProps }: Props) => {
   return (
     <>
       <Header />
-      <Snackbar
-        open={open}
-        onClose={() => setOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
         <Alert
-          onClose={() => setOpen(false)}
-          severity="success"
-          sx={{ width: '100%', background: "#5EB476", color: "#fff", fontWeight: "bold" }}>
-          { login ? "ログインしました" : <></>}
-          { logout ? "ログアウトしました" : <></>}
-        </Alert>
-      </Snackbar>
+          handleCloseAlert={() => setOpen(false)}
+          message={message}
+          handleBarClose={() => setOpen(false)}
+          open={open}
+          />
       <main css={MainCss}>
         <div css={breadCss}>
           {breadCrumbProps ? 

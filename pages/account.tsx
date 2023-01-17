@@ -14,6 +14,7 @@ import { selectAuth } from "redux/slice/authSlice";
 import { selectUser, fetchUserById } from "redux/slice/userSlice";
 import Divider from "style/Divider";
 import { accountPage, accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
+import { appPath } from "constants/appConstants";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -164,10 +165,14 @@ const Account = ({}) => {
         <div css={CoverCss}>
           <div css={bgCircleCss}>
             <div css={CircleCss}>
-              <Image src={user.data?.coverImage ?? ""} objectFit='cover' alt="cover image" layout='fill' />
+            {user.data?.profileImage ?
+              <Image src={user.data.profileImage ? appPath + user.data?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
+              : null}
             </div>
           </div> 
-            <Image src={user.data?.profileImage ?? ""} objectFit='cover' alt="profile image" layout='fill' />
+            {user.data?.coverImage ?
+            <Image src={appPath + user.data.coverImage} objectFit='cover' alt="cover image" layout='fill' />
+            : null}
           </div>
           <div css={ProfileCss}>
             <div css={EditCss}>

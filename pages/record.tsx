@@ -13,19 +13,13 @@ import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
 import Button from "components/Button";
+import { InnerCss } from "style/common";
 
 const WrapCss = css`
   height: 100%;
   display: flex;
   flex-direction: column;
   padding: 0 32px;
-`
-
-const InnerCss = css`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 32px 0;
 `
 
 const submitAreaCss = css`

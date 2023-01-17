@@ -14,6 +14,7 @@ import Button from "components/Button";
 import TextArea from "components/TextArea";
 import Image from "next/image";
 import { useRef } from "react";
+import { appPath } from "constants/appConstants";
 
 const WrapCss = css`
   height: 100%;
@@ -38,6 +39,7 @@ const InputsCss = css`
   flex: 1;
 `
 const CircleCss = css`
+  cursor: pointer;
   overflow: hidden;
   position: absolute;
   top: 50%;
@@ -49,7 +51,9 @@ const CircleCss = css`
   background: #E8E8E8;
 `
 const CoverCss = css`
+  cursor: pointer;
   position: relative;
+  background: #E8E8E8;
   height: 250px;
   width: 100%;
   margin: 0 0 80px 0;
@@ -67,14 +71,12 @@ const bgCircleCss = css`
 `
 
 const ProfileImageCss = css`
-  cursor: pointer;
   &:hover {
     opacity: 0.8;
   }
 `
 
 const CoverImageCss = css`
-  cursor: pointer;
   &:hover {
     opacity: 0.8;
   }
@@ -96,7 +98,6 @@ const AccountUpdate = ({}) => {
 })
 const fileProfileInput = useRef<HTMLInputElement>(null);
 const fileCoverInput = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     const userId = auth.userId;
     if(!userId) {
@@ -112,11 +113,19 @@ const fileCoverInput = useRef<HTMLInputElement>(null);
         name: user?.data?.name,
         description: user?.data?.description
       });
-      setFileCover(user.data?.coverImage);
-      setFileProfile(user.data?.profileImage);
+      if(user.data?.coverImage) {
+        setFileCover(appPath + user.data?.coverImage);
+      }
+      if(user.data?.profileImage) {
+        setFileProfile(appPath + user.data?.profileImage);
+      }
       setFormData(_formData);
     }
   },[user])
+
+  useEffect(() => {
+    console.log(fileCover);
+  },[fileCover])
 
   const childPages = [
     {
@@ -179,19 +188,18 @@ const fileCoverInput = useRef<HTMLInputElement>(null);
 
   const handleName = (name: string) => {
     const _formData = Object.assign(formData, {name});
-    setFormData(_formData);
+    setFormData({..._formData});
   }
 
-  const handleDesc = (desc: string) => {
-    const _formData = Object.assign(formData, {desc});
-    setFormData(_formData);
+  const handleDesc = (description: string) => {
+    const _formData = Object.assign(formData, {description});
+    setFormData({..._formData});
   }
 
   const handlePassword = (password: string) => {
     const _formData = Object.assign(formData, {password});
-    setFormData(_formData);
+    setFormData({..._formData});
   }
-
   return (
     <Auth>
       <Layout breadCrumbProps={breadCrumb}>
@@ -200,21 +208,25 @@ const fileCoverInput = useRef<HTMLInputElement>(null);
         <Divider />
          <div css={InnerCss}>
           <div css={InputsCss}>
+           <label htmlFor="cover_image">
             <div css={CoverCss}>
               <div css={bgCircleCss}>
+                <label htmlFor="profile_image">
                 <div css={CircleCss}>
-                  <label htmlFor="profile_image">
+                    {fileProfile ?
                     <Image src={fileProfile ?? ""} objectFit='cover' alt="profile image" layout='fill' css={ProfileImageCss} />
-                  </label>
+                    : null}
                 <input onChange={handleProfileUpdate} type="file" id="profile_image" ref={fileProfileInput} accept="image/*" hidden />
                 </div>
+                </label>
               </div>
-              <label htmlFor="cover_image">
+              {fileCover ?
               <Image src={fileCover ?? ""} objectFit='cover' alt="cover image" layout='fill' css={CoverImageCss} />
-              </label>
+              : null}
               <input onChange={handleCoverUpdate} type="file" id="cover_image" ref={fileCoverInput} accept="image/*" 
               hidden />
             </div>
+            </label>
             <Input
             labelText="名前"
             type="text"

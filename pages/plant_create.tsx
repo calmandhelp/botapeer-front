@@ -13,6 +13,9 @@ import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
 import Button from "components/Button";
+import FileUploader from "components/FileUploader";
+import { InnerCss } from "style/common";
+import TextArea from "components/TextArea";
 
 const WrapCss = css`
   height: 100%;
@@ -20,14 +23,6 @@ const WrapCss = css`
   flex-direction: column;
   padding: 0 32px;
 `
-
-const InnerCss = css`
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 32px 0;
-`
-
 const submitAreaCss = css`
   text-align: center;
   padding: 32px 0 0 0;
@@ -38,21 +33,21 @@ const InputsCss = css`
 `
 
 const PlantCreate = ({}) => {
+  console.log("test");
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
   const user = useAppSelector(selectUser);
-  const login = router.query.login;
-  const logout = router.query.logout;
   const [title, setTitle] = useState("");
   const [date, setDate] = useState<Date | null>(new Date());
-
-  useEffect(()=>{
-    if(login || logout) {
-      setOpen(true);
-    }
-  },[login, logout])
+  const [formData, setFormData] = useState({
+    id: 0,
+    name: "",
+    description: "",
+    password: "",
+})
+  const submitData = new FormData();
 
   useEffect(() => {
     const userId = auth.userId;
@@ -82,6 +77,11 @@ const PlantCreate = ({}) => {
 
   }
 
+  const handleDesc = (desc: string) => {
+    const _formData = Object.assign(formData, {desc});
+    setFormData(_formData);
+  }
+
   return (
     <Auth>
       <Layout breadCrumbProps={breadCrumb}>
@@ -90,11 +90,18 @@ const PlantCreate = ({}) => {
         <Divider />
          <div css={InnerCss}>
           <div css={InputsCss}>
+            <FileUploader /><br /><br />
             <Input
             labelText="植物のタイトル"
             type="text"
             handleInput={(e) => setTitle(e.target.value)}
             text={title}
+            /><br /><br />
+            <TextArea
+            labelText="コメント"
+            type="text"
+            handleInput={(e) => handleDesc(e.target.value)}
+            text={formData.description ?? ""}
             /><br /><br />
             <DatePicker
             handleChange={(date) => setDate(date)}
