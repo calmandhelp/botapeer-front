@@ -6,10 +6,14 @@ import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router'
 import BreadCrumbs, { BreadCrumbProps } from "components/BreadCrumbs";
 import Alert from "components/Alert";
+import { Error } from "util/apiUtils";
 
 type Props = {
   children?: ReactNode
   breadCrumbProps?: BreadCrumbProps
+  errors?: Error[]
+  propMessage?: string
+  handleMessageReset?: () => void
 }
 
 const MainCss = css`
@@ -39,8 +43,7 @@ const breadCss = css `
   width: 960px;
 `
 
-export const Layout = ({ children, breadCrumbProps }: Props) => {
-
+export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleMessageReset }: Props) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const login = router.query.login;
@@ -63,13 +66,30 @@ export const Layout = ({ children, breadCrumbProps }: Props) => {
     }
   },[login, logout])
 
+  useEffect(() => {
+    if(errors && errors?.length != 0) {
+      setOpen(true);
+    }
+    if(propMessage) {
+      setOpen(true);
+    }
+  },[errors, propMessage])
+
+  const handleCloseAlert = () => {
+    setOpen(false);
+    if(handleMessageReset) {
+      handleMessageReset();
+    }
+  }
+
   return (
     <>
       <Header />
         <Alert
-          handleCloseAlert={() => setOpen(false)}
-          message={message}
-          handleBarClose={() => setOpen(false)}
+          handleCloseAlert={handleCloseAlert}
+          message={propMessage ?? message}
+          errors={errors}
+          handleBarClose={handleCloseAlert}
           open={open}
           />
       <main css={MainCss}>
@@ -78,7 +98,9 @@ export const Layout = ({ children, breadCrumbProps }: Props) => {
           <BreadCrumbs {...breadCrumbProps} />: ""}
         </div>
         <div css={ContainerCss}>
-          <div css={ContentCss}>{children}</div>
+          <div css={ContentCss}>
+            {children}
+          </div>
         </div>
       </main>
       <Footer />

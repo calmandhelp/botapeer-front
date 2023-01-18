@@ -120,7 +120,7 @@ const ListUlCss = css`
     width: 180px;
     margin: 0 0 0 20px;
   }
-  li:first-child {
+  li:first-of-type {
     margin: 0;
   }
 `;

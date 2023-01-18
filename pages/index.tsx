@@ -146,27 +146,6 @@ export default function Home() {
               <span>2022/12/15-</span>
             </li>
           </ul>
-          {/* ユーザー表示とログアウトのサンプルソース。後で使う[TODO] */}
-          {/* <div>
-          <button
-            onClick={async () => {
-              await axios.get("http://localhost:8081/api/users");
-            }}
-          >
-            ユーザー表示
-          </button>
-          <button
-            onClick={async () => {
-              await axios.get("http://localhost:8081/api/logout", {
-                headers: {
-                  Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0IiwiaWF0IjoxNjcyODk5MzE3LCJleHAiOjE2NzI5MDI5MTd9.alG3n-FxpDJCzG5JVhgg8cbhYO2ap_ewDQQzKIyFLZRNVzUUODijhy8m_FDtQoExopVeGlMhQHEjr8D-DnRQag`,
-                },
-              });
-            }}
-          >
-            ログアウト
-          </button>
-        </div> */}
         </>
       </Layout>
     </>

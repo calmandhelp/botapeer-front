@@ -14,7 +14,7 @@ export const request = (options: any) => {
   .then(response => 
       response.json().then(json => {
           if(!response.ok) {
-              return Promise.reject(json);
+              return Promise.reject(JSON.stringify(json));
           }
           return json;
       })
@@ -36,7 +36,7 @@ export const multiPartRequest = (options: any) => {
   .then(response => 
       response.json().then(json => {
           if(!response.ok) {
-              return Promise.reject(json);
+              return Promise.reject(JSON.stringify(json));
           }
           return json;
       })
@@ -59,4 +59,9 @@ export type LoginRequest = {
 export type LoginResponse = {
   accessToken: string,
   tokenType: string
+}
+
+export type Error = {
+  code: string,
+  message: string
 }

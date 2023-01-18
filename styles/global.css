@@ -9,6 +9,24 @@ ol, ul {
 li {
   list-style-type: none;
 }
+a:link {
+      color: #333;
+      text-decoration: none;
+}
+a:visited {
+  color: #333;
+  text-decoration: none;
+}
+a:hover {
+  color: #0e7129;
+  text-decoration: none;
+}
+a img {
+  border-width: 0px;
+  border-style: none;
+  border-color: #fff;
+  background: transparent;
+}
 #__next {
   display: flex;
   flex-direction: column;

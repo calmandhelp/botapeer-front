@@ -1,6 +1,7 @@
 import React from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { Snackbar } from "@mui/material";
+import { Snackbar, useTheme } from "@mui/material";
+import { Error } from "util/apiUtils";
 
 const CustomeAlert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -14,9 +15,10 @@ type Props = {
   handleBarClose: () => void
   handleCloseAlert: () => void
   open: boolean
+  errors?: Error[]
 }
 
-const Alert = ({message, handleBarClose, open, handleCloseAlert}: Props) => {
+const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props) => {
   return(
     <Snackbar
     open={open}
@@ -25,11 +27,13 @@ const Alert = ({message, handleBarClose, open, handleCloseAlert}: Props) => {
   >
     <CustomeAlert
     onClose={handleCloseAlert}
-    severity="success"
-    sx={{ width: '100%', background: "#5EB476", color: "#fff", fontWeight: "bold" }}>
+    severity={errors ? "error" : "success"}
+    sx={{ width: '100%', background: 'primary', color: "#fff", fontWeight: "bold" }}>
     { message ?? <></>}
+    { errors?.map((e)=> {
+      return <>{e.message}<br/></>
+    }) ?? <></>}
   </CustomeAlert>
-
   </Snackbar>
   )
 }
