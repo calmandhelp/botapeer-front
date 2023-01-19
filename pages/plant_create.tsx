@@ -50,7 +50,7 @@ const PlantCreate = ({}) => {
   const submitData = new FormData();
 
   useEffect(() => {
-    const userName = auth?.userName;
+    const userName = auth?.data?.name;
     if(!userName) {
       return;
     } else {
@@ -60,7 +60,7 @@ const PlantCreate = ({}) => {
 
   const childPages = [
     {
-    href: rootPage.path + auth?.userName,
+    href: rootPage.path + auth?.data?.name,
     label: accountPage.text,
     }
   ]

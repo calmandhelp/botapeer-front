@@ -76,7 +76,8 @@ const Header = ({}) => {
           console.log(userId);
           dispatch(fetchAuthUser(userId)).then((res) => {
             console.log(res);
-            router.push(rootPage.path + auth?.userName + "?login=true");
+            console.log(auth);
+            router.push(rootPage.path + auth?.data?.name + "?login=true");
           })
         }
       })
@@ -127,8 +128,8 @@ const Header = ({}) => {
             >
               {auth.isLogin ? 
               <Box>
-              <MenuItem sx={{cursor: "auto", "pointerEvents": "none"}}>{auth?.userName}</MenuItem>  
-              <MenuItem onClick={() => router.push(rootPage.path + auth?.userName)}>アカウント</MenuItem>
+              <MenuItem sx={{cursor: "auto", "pointerEvents": "none"}}>{auth?.data?.name}</MenuItem>  
+              <MenuItem onClick={() => router.push(rootPage.path + auth?.data?.name)}>アカウント</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
               </Box>
               : 

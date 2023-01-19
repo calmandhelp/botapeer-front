@@ -173,7 +173,7 @@ const Account = ({user}: Props) => {
           </div>
           <div css={ProfileCss}>
             <div css={EditCss}>
-              <IsLoginUser isLoginUser={auth.userName == user?.name}>
+              <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
                 <SimpleButton handleClick={() => router.push(accountUpdatePage.path)}>編集</SimpleButton>
               </IsLoginUser>
             </div>
@@ -203,11 +203,11 @@ const Account = ({user}: Props) => {
           <div css={ContentCss}>
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
-            <IsLoginUser isLoginUser={auth.userName == user?.name}>
+            <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
             <SimpleButton handleClick={() => router.push(recordPage.path)}>{recordPage.text}</SimpleButton>
             </IsLoginUser>
           </div>
-          <IsLoginUser isLoginUser={auth.userName == user?.name}>
+          <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
           <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.push(plantCreatePage.path)} css={{cursor: "pointer"}}>
             <AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></a></p>
           </IsLoginUser>

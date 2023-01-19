@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { fetchUserByIdBase, fetchUserByNameBase, updateUserBase, updateUserPasswordBase, updateUserPasswordRequest, UserRequest, UserResponse } from 'util/userApiUtils';
+import { fetchUserByIdBase, fetchUserByNameBase, UserResponse } from 'util/userApiUtils';
 
 export type UserData = {
   data: UserResponse | null;
@@ -30,22 +30,6 @@ export const fetchUsersByName = createAsyncThunk(
   }
 )
 
-export const updateUser = createAsyncThunk(
-  'auth/updateUserStatus',
-  async (data: FormData) => {
-    const response = await updateUserBase(data);
-    return response
-  }
-)
-
-export const updateUserPassword = createAsyncThunk(
-  'auth/updateUserPasswordStatus',
-  async (data: updateUserPasswordRequest) => {
-    const response = await updateUserPasswordBase(data);
-    return response;
-  }
-)
-
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -72,28 +56,6 @@ export const userSlice = createSlice({
       state.status = "succeeded";
     });
     builder.addCase(fetchUsersByName.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.error.message;
-    });
-    builder.addCase(updateUser.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(updateUser.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.status = "succeeded";
-    });
-    builder.addCase(updateUser.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.error.message;
-    });
-    builder.addCase(updateUserPassword.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(updateUserPassword.fulfilled, (state, action) => {
-      state.data = action.payload;
-      state.status = "succeeded";
-    });
-    builder.addCase(updateUserPassword.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

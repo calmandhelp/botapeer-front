@@ -2,19 +2,19 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import { login, LoginRequest } from 'util/apiUtils';
 import { fetchUserByIdBase, UserResponse } from 'util/userApiUtils';
+import { updateAuthUserBase, updateAuthUserPasswordBase, updateAuthUserPasswordRequest } from 'util/authApiUtils';
+import { User } from 'model/user';
 
 export type AuthData = {
   isLogin: boolean,
-  userName: string | undefined,
-  userId: number | undefined,
+  data: User | null
   status: "idle" | "pending" | "succeeded" | "failed",
   error: undefined | string
 };
 
 const initialState: AuthData = {
   isLogin: false,
-  userName: '',
-  userId: 0,
+  data: null,
   status: "idle",
   error: undefined,
 };
@@ -38,6 +38,22 @@ export const fetchAuthUser = createAsyncThunk(
   async (userId: number) => {
     const response = await fetchUserByIdBase(userId);
     return response
+  }
+)
+
+export const updateAuthUser = createAsyncThunk(
+  'auth/updateUserStatus',
+  async (data: FormData) => {
+    const response = await updateAuthUserBase(data);
+    return response
+  }
+)
+
+export const updateAuthUserPassword = createAsyncThunk(
+  'auth/updateUserPasswordStatus',
+  async (data: updateAuthUserPasswordRequest) => {
+    const response = await updateAuthUserPasswordBase(data);
+    return response;
   }
 )
 
@@ -68,10 +84,31 @@ export const authSlice = createSlice({
     });
     builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
       state.status = "succeeded";
-      state.userName = action.payload.name;
-      state.userId = action.payload.id;
+      state.data = action.payload;
     });
     builder.addCase(fetchAuthUser.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    builder.addCase(updateAuthUser.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(updateAuthUser.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.status = "succeeded";
+    });
+    builder.addCase(updateAuthUser.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    builder.addCase(updateAuthUserPassword.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(updateAuthUserPassword.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.status = "succeeded";
+    });
+    builder.addCase(updateAuthUserPassword.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
 import { useAppDispatch, useAppSelector } from 'redux/hook';
-import { selectUser, updateUserPassword } from "redux/slice/userSlice";
+import { selectUser } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
 import { accountPage, passwordUpdatePage, rootPage } from "constants/pageConstants";
@@ -10,7 +10,7 @@ import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import Button from "components/Button";
 import { Error } from "util/apiUtils";
-import { selectAuth } from "redux/slice/authSlice";
+import { selectAuth, updateAuthUserPassword } from "redux/slice/authSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -43,7 +43,7 @@ const AccountUpdate = ({}) => {
 
   const childPages = [
     {
-    href: rootPage.path + auth?.userName,
+    href: rootPage.path + auth?.data?.name,
     label: accountPage.text,
     },
     {
@@ -62,7 +62,7 @@ const AccountUpdate = ({}) => {
   }
 
   const handleClick = () => {
-      dispatch(updateUserPassword({currentPassword, newPassword}))
+      dispatch(updateAuthUserPassword({currentPassword, newPassword}))
       .unwrap()
       .then(payload => {
         console.log({ payload });

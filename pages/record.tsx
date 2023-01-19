@@ -49,7 +49,7 @@ const Record = ({}) => {
   },[login, logout])
 
   useEffect(() => {
-    const userName = auth.userName;
+    const userName = auth.data?.name;
     if(!userName) {
       return;
     } else {
@@ -59,7 +59,7 @@ const Record = ({}) => {
 
   const childPages = [
     {
-    href:  rootPage.path + auth.userName,
+    href:  rootPage.path + auth.data?.name,
     label: accountPage.text,
     }
   ]
