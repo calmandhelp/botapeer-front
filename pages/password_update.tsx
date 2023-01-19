@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
-import { useAppSelector, useAppDispatch } from 'redux/hook';
-import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById, UserData, updateUser, updateUserPassword } from "redux/slice/userSlice";
+import { useAppDispatch, useAppSelector } from 'redux/hook';
+import { selectUser, updateUserPassword } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, passwordUpdatePage } from "constants/pageConstants";
+import { accountPage, passwordUpdatePage, rootPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import Button from "components/Button";
-import { unwrapResult } from "@reduxjs/toolkit";
 import { Error } from "util/apiUtils";
+import { selectAuth } from "redux/slice/authSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -37,13 +36,14 @@ const InputsCss = css`
 `
 const AccountUpdate = ({}) => {
   const dispatch = useAppDispatch();
+  const auth = useAppSelector(selectAuth);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [errors, setErrors] = useState<Error[]>([]);
 
   const childPages = [
     {
-    href: accountPage.path,
+    href: rootPage.path + auth?.userName,
     label: accountPage.text,
     },
     {

@@ -11,10 +11,13 @@ import SimpleButton from "components/SimpleButton";
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById } from "redux/slice/userSlice";
 import Divider from "style/Divider";
-import { accountPage, accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
+import { accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
 import { appPath } from "constants/appConstants";
+import IsLoginUser from "components/IsLoginUser";
+import { UserResponse } from "util/userApiUtils";
+import { User } from "model/user";
+import { API_BASE_URL } from "constants/apiConstants";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -134,12 +137,15 @@ const PlantTitleWrapCss = css `
   align-items: center;
 `
 
-const Account = ({}) => {
+type Props = {
+  user: User
+}
+
+const Account = ({user}: Props) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
-  const user = useAppSelector(selectUser);
   const login = router.query.login;
   const logout = router.query.logout;
 
@@ -149,40 +155,33 @@ const Account = ({}) => {
     }
   },[login, logout])
 
-  useEffect(() => {
-    const userId = auth.userId;
-    if(!userId) {
-      return;
-    } else {
-      dispatch(fetchUserById(userId));
-    }
-  },[auth.userId, dispatch])
-
   return (
-    <Auth>
+    <>
       <Header />
       <div css={AccountInfoCss}>
         <div css={CoverCss}>
           <div css={bgCircleCss}>
             <div css={CircleCss}>
-            {user.data?.profileImage ?
-              <Image src={user.data.profileImage ? appPath + user.data?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
+            {user?.profileImage ?
+              <Image src={user?.profileImage ? appPath + user?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
               : null}
             </div>
           </div> 
-            {user.data?.coverImage ?
-            <Image src={appPath + user.data.coverImage} objectFit='cover' alt="cover image" layout='fill' />
+            {user?.coverImage ?
+            <Image src={appPath + user?.coverImage} objectFit='cover' alt="cover image" layout='fill' />
             : null}
           </div>
           <div css={ProfileCss}>
             <div css={EditCss}>
-              <SimpleButton handleClick={() => router.replace(accountUpdatePage.path)}>編集</SimpleButton>
+              <IsLoginUser isLoginUser={auth.userName == user?.name}>
+                <SimpleButton handleClick={() => router.push(accountUpdatePage.path)}>編集</SimpleButton>
+              </IsLoginUser>
             </div>
             <div css={InfoCss}>
-              <span>{user.data?.name}</span><br />
+              <span>{user?.name}</span><br />
               <span>フォロー 0 </span>
               <span>フォロワー 0</span>
-              <p css={DiscriptionCss}>{user.data?.description}</p>
+              <p css={DiscriptionCss}>{user?.description}</p>
             </div>
           </div>
       </div>
@@ -204,10 +203,14 @@ const Account = ({}) => {
           <div css={ContentCss}>
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
-            <SimpleButton handleClick={() => router.replace(recordPage.path)}>{recordPage.text}</SimpleButton>
+            <IsLoginUser isLoginUser={auth.userName == user?.name}>
+            <SimpleButton handleClick={() => router.push(recordPage.path)}>{recordPage.text}</SimpleButton>
+            </IsLoginUser>
           </div>
-          <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.replace(plantCreatePage.path)} css={{cursor: "pointer"}}>
+          <IsLoginUser isLoginUser={auth.userName == user?.name}>
+          <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.push(plantCreatePage.path)} css={{cursor: "pointer"}}>
             <AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></a></p>
+          </IsLoginUser>
           <ul css={ListUlCss}>
             <li>
               <Image
@@ -269,8 +272,21 @@ const Account = ({}) => {
         </div>
       </main>
       <Footer />
-    </Auth>
+    </>
   );
 };
+
+export async function getServerSideProps({ query }: any) {
+  const username = query.account
+  const res = await fetch(API_BASE_URL + "/api/users?username=" + username);
+  const data = await res.json()
+  if(data.length == 0) {
+    return {
+      notFound: true
+    }
+  }
+  return { props: { user: data[0] } }
+}
+
 
 export default Account;

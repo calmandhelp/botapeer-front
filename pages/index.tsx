@@ -3,6 +3,8 @@ import { css } from "@emotion/react";
 import Image from "next/image";
 import { Layout } from "Layout/Layout";
 import { Alert } from "@mui/material";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const H3TitleCss = css`
   padding: 5px 0 0 0;
@@ -25,6 +27,12 @@ const ListCss = css`
 `;
 
 export default function Home() {
+  const router = useRouter();
+  const expired = router.query.expired;
+  useEffect(() => {
+    console.log(expired);
+    console.log("home");
+  },[])
 
   return (
     <>

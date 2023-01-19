@@ -25,7 +25,7 @@ export const BreadCrumbs = ({ childPages, currentPage }: BreadCrumbProps) => {
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           component="span"
-          onClick={() => router.replace(rootPage.path)}
+          onClick={() => router.push(rootPage.path)}
           underline="hover"
           sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
           color="inherit"
@@ -43,7 +43,7 @@ export const BreadCrumbs = ({ childPages, currentPage }: BreadCrumbProps) => {
                 sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                 color="inherit"
                 key={index}
-                onClick={() => router.replace(page?.href ?? "")}
+                onClick={() => router.push(page?.href ?? "")}
               >
                 {page.label}
               </Link>

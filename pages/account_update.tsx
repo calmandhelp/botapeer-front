@@ -3,10 +3,10 @@ import Auth  from 'components/Auth';
 import Input from "components/Input";
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById, UserData, updateUser } from "redux/slice/userSlice";
+import { selectUser, fetchUserById, UserData, updateUser, fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, passwordUpdatePage } from "constants/pageConstants";
+import { accountPage, passwordUpdatePage, rootPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import Button from "components/Button";
@@ -15,6 +15,7 @@ import { useRef } from "react";
 import { appPath } from "constants/appConstants";
 import Image from "components/Image";
 import Link from "next/link";
+import { User } from "model/user";
 
 const WrapCss = css`
   height: 100%;
@@ -88,24 +89,21 @@ const AccountUpdate = ({}) => {
   const user = useAppSelector(selectUser);
   const [fileCover, setFileCover] = useState<string | undefined>();
   const [fileProfile, setFileProfile] = useState<string | undefined>('');
-  const [formData, setFormData] = useState({
-    id: 0,
-    name: "",
-    description: "",
-    password: "",
-  })
+  const [formData, setFormData] = useState<User>({})
   const [message, setMessage] = useState('');
+  const [disabled, setDisabled] = useState(false);
   const fileProfileInput = useRef<HTMLInputElement>(null);
   const fileCoverInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const userId = auth.userId;
-    if(!userId) {
+    const userName = auth?.userName;
+    if(!userName) {
       return;
     } else {
-      dispatch(fetchUserById(userId));
+      console.log(userName);
+      dispatch(fetchUsersByName(userName));
     }
-  },[auth.userId, dispatch])
+  },[auth, dispatch])
 
   useEffect(() => {
     if(user.status == "succeeded") {
@@ -114,24 +112,34 @@ const AccountUpdate = ({}) => {
         description: user?.data?.description
       });
       if(user.data?.coverImage) {
+        console.log(user.data?.coverImage);
         setFileCover(appPath + user.data?.coverImage);
       }
       if(user.data?.profileImage) {
+        console.log(user.data?.profileImage);
         setFileProfile(appPath + user.data?.profileImage);
       }
       setFormData({..._formData});
     }
   },[user])
 
+  useEffect(() => {
+    if(!formData) {
+      setDisabled(true);
+    } else {
+      
+    }
+  },[])
+
   const childPages = [
     {
-    href: accountPage.path,
+    href: rootPage.path + auth?.userName,
     label: accountPage.text,
     }
   ]
 
   const currentPage = {
-    label: accountUpdatePage.text
+    label: (accountUpdatePage.text)
   }
 
   const breadCrumb = {
@@ -158,6 +166,7 @@ const AccountUpdate = ({}) => {
     dispatch(updateUser(submitData)).then(() => {
       const _formData = Object.assign(formData, {password: ""});
       setFormData({..._formData});
+      
       setMessage("更新しました");
     });
   }
@@ -236,7 +245,7 @@ const AccountUpdate = ({}) => {
             <br /><br />
           </div>
           <div css={submitAreaCss}> 
-            <Button handleClick={handleClick}>更新</Button>
+            <Button handleClick={handleClick} disabled={disabled}>更新</Button>
           </div>
          </div>
          <input onChange={handleProfileUpdate} type="file" id="profile_image" ref={fileProfileInput} accept="image/*" hidden />

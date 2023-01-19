@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { fetchUserByIdBase, updateUserBase, updateUserPasswordBase, updateUserPasswordRequest, UserRequest, UserResponse } from 'util/userApiUtils';
+import { fetchUserByIdBase, fetchUserByNameBase, updateUserBase, updateUserPasswordBase, updateUserPasswordRequest, UserRequest, UserResponse } from 'util/userApiUtils';
 
 export type UserData = {
   data: UserResponse | null;
@@ -18,6 +18,14 @@ export const fetchUserById = createAsyncThunk(
   'auth/fetchUserByIdStatus',
   async (userId: number) => {
     const response = await fetchUserByIdBase(userId);
+    return response
+  }
+)
+
+export const fetchUsersByName = createAsyncThunk(
+  'auth/fetchUserByNameStatus',
+  async (name: string) => {
+    const response = await fetchUserByNameBase(name);
     return response
   }
 )
@@ -52,6 +60,18 @@ export const userSlice = createSlice({
       state.status = "succeeded";
     });
     builder.addCase(fetchUserById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchUsersByName.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchUsersByName.fulfilled, (state, action) => {
+      const users = action.payload;
+      state.data = users[0];
+      state.status = "succeeded";
+    });
+    builder.addCase(fetchUsersByName.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

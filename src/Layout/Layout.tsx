@@ -52,6 +52,7 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
   const [message, setMessage] = useState('');
 
   useEffect(()=>{
+    console.log("expired: " + expired);
     if(login) {
       setMessage("ログインしました");
       setOpen(true);
@@ -64,7 +65,7 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
       setMessage("長時間ログイン状態が続いたためログアウトしました");
       setOpen(true);
     }
-  },[login, logout])
+  },[login, logout, expired])
 
   useEffect(() => {
     if(errors && errors?.length != 0) {

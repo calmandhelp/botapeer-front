@@ -5,10 +5,10 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById } from "redux/slice/userSlice";
+import { selectUser, fetchUserById, fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, plantCreatePage, recordPage } from "constants/pageConstants";
+import { accountPage, plantCreatePage, recordPage, rootPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
@@ -50,17 +50,17 @@ const PlantCreate = ({}) => {
   const submitData = new FormData();
 
   useEffect(() => {
-    const userId = auth.userId;
-    if(!userId) {
+    const userName = auth?.userName;
+    if(!userName) {
       return;
     } else {
-      dispatch(fetchUserById(userId));
+      dispatch(fetchUsersByName(userName));
     }
-  },[auth.userId, dispatch])
+  },[auth, dispatch])
 
   const childPages = [
     {
-    href: accountPage.path,
+    href: rootPage.path + auth?.userName,
     label: accountPage.text,
     }
   ]

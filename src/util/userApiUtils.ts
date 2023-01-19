@@ -1,11 +1,19 @@
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
 import jwtDecode from 'jwt-decode';
+import { User } from 'model/user';
 import { Token } from 'redux/slice/authSlice';
 import { multiPartRequest, request } from 'util/apiUtils';
 
 export function fetchUserByIdBase(userId: number): Promise<UserResponse> {
   return request({
       url: API_BASE_URL + "/api/users/" + userId,
+      method: 'GET',
+  });
+}
+
+export function fetchUserByNameBase(username: string): Promise<UserResponse[]> {
+  return request({
+      url: API_BASE_URL + "/api/users/?username=" + username,
       method: 'GET',
   });
 }
@@ -34,16 +42,7 @@ export function updateUserPasswordBase(data: updateUserPasswordRequest): Promise
   });
 }
 
-export type UserResponse = {
-  id: number,
-  name: string,
-  email: string,
-  status: boolean,
-  // password: string,
-  coverImage: string,
-  profileImage: string,
-  description: string,
-}
+export type UserResponse = User
 
 export type UserRequest = {
   id: number,

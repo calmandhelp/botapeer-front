@@ -1,19 +1,19 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import { login, LoginRequest } from 'util/apiUtils';
-import jwtDecode from 'jwt-decode';
+import { fetchUserByIdBase, UserResponse } from 'util/userApiUtils';
 
 export type AuthData = {
   isLogin: boolean,
-  accessToken: string,
-  userId: number,
+  userName: string | undefined,
+  userId: number | undefined,
   status: "idle" | "pending" | "succeeded" | "failed",
   error: undefined | string
 };
 
 const initialState: AuthData = {
   isLogin: false,
-  accessToken: "",
+  userName: '',
   userId: 0,
   status: "idle",
   error: undefined,
@@ -33,6 +33,14 @@ export const signIn = createAsyncThunk(
   }
 )
 
+export const fetchAuthUser = createAsyncThunk(
+  'auth/fetchAuthUserStatus',
+  async (userId: number) => {
+    const response = await fetchUserByIdBase(userId);
+    return response
+  }
+)
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -45,21 +53,27 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signIn.pending, (state) => {
       state.status = "pending";
-      state.isLogin = false;
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
-      localStorage.setItem("ACCESS_TOKEN",action.payload.accessToken)
-      state.accessToken = action.payload.accessToken;
+      localStorage.setItem("ACCESS_TOKEN", action.payload.accessToken)
       state.status = "succeeded";
       state.isLogin = true;
-      const token: Token = jwtDecode(action.payload.accessToken)
-      state.userId = token.sub;
-      // state.isRedirect = true;
     });
     builder.addCase(signIn.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
-      state.isLogin = false;
+    });
+    builder.addCase(fetchAuthUser.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchAuthUser.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.userName = action.payload.name;
+      state.userId = action.payload.id;
+    });
+    builder.addCase(fetchAuthUser.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
     });
   }
 })

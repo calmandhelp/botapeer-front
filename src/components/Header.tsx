@@ -12,9 +12,12 @@ import Box from "@mui/material/Box";
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { useAppDispatch, useAppSelector } from "redux/hook";
-import { logout, selectAuth } from "redux/slice/authSlice";
+import { fetchAuthUser, logout, selectAuth, Token } from "redux/slice/authSlice";
 import Link from "next/link";
 import { signIn } from '../redux/slice/authSlice';
+import { rootPage } from "constants/pageConstants";
+import { ACCESS_TOKEN } from "constants/apiConstants";
+import jwtDecode from "jwt-decode";
 
 const HeaderCss = css`
   background: #fff;
@@ -50,7 +53,7 @@ const Header = ({}) => {
   };
 
   const handleLogout = () => {
-    router.replace("/?logout=true").then(() => {
+    router.push("/?logout=true").then(() => {
         dispatch(logout());
       })
   }
@@ -66,8 +69,17 @@ const Header = ({}) => {
       password,
     }
     dispatch(signIn(loginRequest)).then(() => {
-        router.replace("/account?login=true");
-      });
+        const accessToken = localStorage.getItem(ACCESS_TOKEN);
+        if(accessToken) {
+          const decodedJwt: Token = jwtDecode(accessToken);
+          const userId = decodedJwt.sub;
+          console.log(userId);
+          dispatch(fetchAuthUser(userId)).then((res) => {
+            console.log(res);
+            router.push(rootPage.path + auth?.userName + "?login=true");
+          })
+        }
+      })
   };
 
   return (
@@ -115,7 +127,8 @@ const Header = ({}) => {
             >
               {auth.isLogin ? 
               <Box>
-              <MenuItem onClick={() => router.replace("/account")}>アカウント</MenuItem>
+              <MenuItem sx={{cursor: "auto", "pointerEvents": "none"}}>{auth?.userName}</MenuItem>  
+              <MenuItem onClick={() => router.push(rootPage.path + auth?.userName)}>アカウント</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
               </Box>
               : 
