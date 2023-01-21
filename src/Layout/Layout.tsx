@@ -6,7 +6,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router'
 import BreadCrumbs, { BreadCrumbProps } from "components/BreadCrumbs";
 import Alert from "components/Alert";
-import { Error } from "util/apiUtils";
+import { Error } from "util/redux/apiBaseUtils";
 
 type Props = {
   children?: ReactNode

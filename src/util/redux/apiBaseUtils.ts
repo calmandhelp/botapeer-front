@@ -1,18 +1,26 @@
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
+import jwtDecode from 'jwt-decode';
+import { store } from 'redux/store/store';
+
+export interface Token {
+  iat: number,
+  exp: number,
+  sub: number
+}
 
 export const request = (options: any) => {
 
   const headers = new Headers({'Content-Type': 'application/json'})
   
-  const token = localStorage.getItem(ACCESS_TOKEN);
-  headers.append('Authorization', 'Bearer ' + token)
+  const auth = store.getState().auth;
+  headers.append('Authorization', 'Bearer ' + auth.accessToken)
   
   const defaults = {headers: headers};
   options = Object.assign({}, defaults, options);
 
   return fetch(options.url, options)
   .then(response => 
-      response.json().then(json => {
+      response.json().then((json) => {
           if(!response.ok) {
               return Promise.reject(JSON.stringify(json));
           }
@@ -26,8 +34,8 @@ export const multiPartRequest = (options: any) => {
 
   const headers = new Headers(httpHeaders)
   
-  const token = localStorage.getItem(ACCESS_TOKEN);
-  headers.append('Authorization', 'Bearer ' + token)
+  const auth = store.getState().auth;
+  headers.append('Authorization', 'Bearer ' + auth.accessToken)
   
   const defaults = {headers: headers};
   options = Object.assign({}, defaults, options);
@@ -43,22 +51,10 @@ export const multiPartRequest = (options: any) => {
   );
 };
 
-export function login(loginRequest: LoginRequest): Promise<LoginResponse> {
-  return request({
-      url: API_BASE_URL + "/api/auth/signin",
-      method: 'POST',
-      body: JSON.stringify(loginRequest)
-  });
-}
-
-export type LoginRequest = {
-  usernameOrEmail: string,
-  password: string
-}
-
-export type LoginResponse = {
-  accessToken: string,
-  tokenType: string
+export const getIdByAccessToken = (accessToken :string): number => {
+  const token: Token = jwtDecode(accessToken)
+  const id = token.sub;
+  return id;
 }
 
 export type Error = {

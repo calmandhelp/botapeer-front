@@ -1,6 +1,6 @@
 import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
 import { User } from 'model/user';
-import { multiPartRequest, request } from 'util/apiUtils';
+import { request } from 'util/redux/apiBaseUtils';
 
 export function fetchUserByIdBase(userId: number): Promise<UserResponse> {
   return request({

@@ -2,15 +2,14 @@ import { useState, useEffect } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
 import { useAppDispatch, useAppSelector } from 'redux/hook';
-import { selectUser } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
 import { accountPage, passwordUpdatePage, rootPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import Button from "components/Button";
-import { Error } from "util/apiUtils";
-import { selectAuth, updateAuthUserPassword } from "redux/slice/authSlice";
+import { Error } from "util/redux/apiBaseUtils";
+import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -36,14 +35,14 @@ const InputsCss = css`
 `
 const AccountUpdate = ({}) => {
   const dispatch = useAppDispatch();
-  const auth = useAppSelector(selectAuth);
+  const authUser = useAppSelector(selectAuthUser);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [errors, setErrors] = useState<Error[]>([]);
 
   const childPages = [
     {
-    href: rootPage.path + auth?.data?.name,
+    href: rootPage.path + authUser?.data?.name,
     label: accountPage.text,
     },
     {

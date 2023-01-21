@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { fetchUserByIdBase, fetchUserByNameBase, UserResponse } from 'util/userApiUtils';
+import { fetchUserByIdBase, fetchUserByNameBase, UserResponse } from 'util/redux/userUtils';
 
 export type UserData = {
   data: UserResponse | null;
@@ -62,9 +62,6 @@ export const userSlice = createSlice({
   }
 })
 
-// export const { increment, decrement, incrementByAmount } = counterSlice.actions
-
-// Other code such as selectors can use the imported `RootState` type
 export const selectUser = (state: RootState) => state.users
 
 export default userSlice.reducer

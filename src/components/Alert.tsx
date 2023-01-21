@@ -1,7 +1,7 @@
 import React from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Snackbar, useTheme } from "@mui/material";
-import { Error } from "util/apiUtils";
+import { Error } from "util/redux/apiBaseUtils";
 
 const CustomeAlert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,

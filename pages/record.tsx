@@ -14,6 +14,7 @@ import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
+import { selectAuthUser } from "redux/slice/authUserSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -35,8 +36,7 @@ const Record = ({}) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const auth = useAppSelector(selectAuth);
-  const user = useAppSelector(selectUser);
+  const authUser = useAppSelector(selectAuthUser);
   const login = router.query.login;
   const logout = router.query.logout;
   const [title, setTitle] = useState("");
@@ -49,17 +49,17 @@ const Record = ({}) => {
   },[login, logout])
 
   useEffect(() => {
-    const userName = auth.data?.name;
+    const userName = authUser.data?.name;
     if(!userName) {
       return;
     } else {
       dispatch(fetchUsersByName(userName));
     }
-  },[auth, dispatch])
+  },[authUser, dispatch])
 
   const childPages = [
     {
-    href:  rootPage.path + auth.data?.name,
+    href:  rootPage.path + authUser.data?.name,
     label: accountPage.text,
     }
   ]

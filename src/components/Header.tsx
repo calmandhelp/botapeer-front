@@ -12,12 +12,13 @@ import Box from "@mui/material/Box";
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { useAppDispatch, useAppSelector } from "redux/hook";
-import { fetchAuthUser, logout, selectAuth, Token } from "redux/slice/authSlice";
+import { logout, selectAuth } from "redux/slice/authSlice";
 import Link from "next/link";
 import { signIn } from '../redux/slice/authSlice';
 import { rootPage } from "constants/pageConstants";
-import { ACCESS_TOKEN } from "constants/apiConstants";
 import jwtDecode from "jwt-decode";
+import { getIdByAccessToken, Token } from "util/redux/apiBaseUtils";
+import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
 
 const HeaderCss = css`
   background: #fff;
@@ -36,6 +37,7 @@ const Header = ({}) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
+  const authUser = useAppSelector(selectAuthUser);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -68,20 +70,21 @@ const Header = ({}) => {
       usernameOrEmail,
       password,
     }
-    dispatch(signIn(loginRequest)).then(() => {
-        const accessToken = localStorage.getItem(ACCESS_TOKEN);
-        if(accessToken) {
-          const decodedJwt: Token = jwtDecode(accessToken);
-          const userId = decodedJwt.sub;
-          console.log(userId);
-          dispatch(fetchAuthUser(userId)).then((res) => {
-            console.log(res);
-            console.log(auth);
-            router.push(rootPage.path + auth?.data?.name + "?login=true");
-          })
+    dispatch(signIn(loginRequest))
+    .unwrap().then((payload) => {
+      if(payload.accessToken) {
+          const userId = getIdByAccessToken(payload.accessToken);
+          dispatch(fetchAuthUserById(userId))
+          .unwrap().then((payload) => 
+            router.push(rootPage.path + payload.name + "?login=true")
+          )
         }
-      })
+    })
   };
+
+  useEffect(() => {
+    dispatch(fetchAuthUserById(auth.userId))
+  },[auth])
 
   return (
     <header css={HeaderCss}>
@@ -128,8 +131,8 @@ const Header = ({}) => {
             >
               {auth.isLogin ? 
               <Box>
-              <MenuItem sx={{cursor: "auto", "pointerEvents": "none"}}>{auth?.data?.name}</MenuItem>  
-              <MenuItem onClick={() => router.push(rootPage.path + auth?.data?.name)}>アカウント</MenuItem>
+              <MenuItem sx={{cursor: "auto", "pointerEvents": "none"}}>{authUser.data?.name}</MenuItem>  
+              <MenuItem onClick={() => router.push(rootPage.path + authUser.data?.name)}>アカウント</MenuItem>
               <MenuItem onClick={handleLogout}>ログアウト</MenuItem>
               </Box>
               : 

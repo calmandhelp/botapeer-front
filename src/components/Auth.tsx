@@ -4,7 +4,8 @@ import { useRouter } from "next/router";
 import { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from 'redux/hook';
-import { logout, selectAuth, Token } from "redux/slice/authSlice";
+import { logout, selectAuth } from "redux/slice/authSlice";
+import { Token } from "util/redux/apiBaseUtils";
 
 type Props = {
   children?: ReactNode
@@ -23,7 +24,7 @@ const Auth = ({ children }: Props) => {
       }
     }, [router, auth]);
 
-      const token = localStorage.getItem("ACCESS_TOKEN");
+      const token = auth.accessToken;
 
       if(token) {
         const decodedJwt: Token = jwtDecode(token);

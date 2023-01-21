@@ -2,7 +2,6 @@ import React, { ReactNode, useState, useEffect } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
 import { useAppSelector, useAppDispatch } from 'redux/hook';
-import { fetchAuthUser, selectAuth, updateAuthUser } from "redux/slice/authSlice";
 import { selectUser, fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
@@ -16,6 +15,8 @@ import { appPath } from "constants/appConstants";
 import Image from "components/Image";
 import Link from "next/link";
 import { User } from "model/user";
+import { selectAuth } from "redux/slice/authSlice";
+import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -86,6 +87,7 @@ const CoverImageCss = css`
 const AccountUpdate = ({}) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
+  const authUser = useAppSelector(selectAuthUser);
   const [fileCover, setFileCover] = useState<string | undefined>();
   const [fileProfile, setFileProfile] = useState<string | undefined>('');
   const [formData, setFormData] = useState<User>({})
@@ -95,31 +97,29 @@ const AccountUpdate = ({}) => {
   const fileCoverInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const id = auth?.data?.id;
+    const id = auth?.userId;
     if(!id) {
       return;
     } else {
-      dispatch(fetchAuthUser(id));
+      dispatch(fetchAuthUserById(id));
     }
   },[dispatch])
 
   useEffect(() => {
-    if(auth.status == "succeeded") {
+    if(authUser.status == "succeeded") {
       const _formData = Object.assign(formData, {
-        name: auth?.data?.name,
-        description: auth?.data?.description
+        name: authUser?.data?.name,
+        description: authUser?.data?.description
       });
-      if(auth.data?.coverImage) {
-        console.log(auth.data?.coverImage);
-        setFileCover(appPath + auth.data?.coverImage);
+      if(authUser.data?.coverImage) {
+        setFileCover(appPath + authUser.data?.coverImage);
       }
-      if(auth.data?.profileImage) {
-        console.log(auth.data?.profileImage);
-        setFileProfile(appPath + auth.data?.profileImage);
+      if(authUser.data?.profileImage) {
+        setFileProfile(appPath + authUser.data?.profileImage);
       }
       setFormData({..._formData});
     }
-  },[auth])
+  },[authUser])
 
   useEffect(() => {
     if(!formData) {
@@ -131,7 +131,7 @@ const AccountUpdate = ({}) => {
 
   const childPages = [
     {
-    href: rootPage.path + auth?.data?.name,
+    href: rootPage.path + authUser?.data?.name,
     label: accountPage.text,
     }
   ]
@@ -146,6 +146,8 @@ const AccountUpdate = ({}) => {
   }
 
   const handleClick = () => {
+
+    console.log(formData);
 
     const submitData = new FormData();
 
@@ -162,8 +164,8 @@ const AccountUpdate = ({}) => {
     }
 
     dispatch(updateAuthUser(submitData)).then((res) => {
-      if(auth.data?.id) {
-        dispatch(fetchAuthUser(auth.data?.id)).then(() => {
+      if(authUser.data?.id) {
+        dispatch(fetchAuthUserById(authUser.data?.id)).then(() => {
           setMessage("更新しました");
         })
       }

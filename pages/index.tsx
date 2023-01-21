@@ -27,13 +27,6 @@ const ListCss = css`
 `;
 
 export default function Home() {
-  const router = useRouter();
-  const expired = router.query.expired;
-  useEffect(() => {
-    console.log(expired);
-    console.log("home");
-  },[])
-
   return (
     <>
       <Head>

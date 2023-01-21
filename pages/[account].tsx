@@ -1,5 +1,4 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import Auth  from 'components/Auth';
 import Header from "components/Header";
 import Footer from "components/Footer";
 import { css } from "@emotion/react";
@@ -15,7 +14,6 @@ import Divider from "style/Divider";
 import { accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
 import { appPath } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
-import { UserResponse } from "util/userApiUtils";
 import { User } from "model/user";
 import { API_BASE_URL } from "constants/apiConstants";
 
@@ -144,7 +142,6 @@ type Props = {
 const Account = ({user}: Props) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
   const login = router.query.login;
   const logout = router.query.logout;
@@ -173,7 +170,7 @@ const Account = ({user}: Props) => {
           </div>
           <div css={ProfileCss}>
             <div css={EditCss}>
-              <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
+              <IsLoginUser isLoginUser={auth.userId== user?.id}>
                 <SimpleButton handleClick={() => router.push(accountUpdatePage.path)}>編集</SimpleButton>
               </IsLoginUser>
             </div>
@@ -203,11 +200,11 @@ const Account = ({user}: Props) => {
           <div css={ContentCss}>
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
-            <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
+            <IsLoginUser isLoginUser={auth.userId== user?.id}>
             <SimpleButton handleClick={() => router.push(recordPage.path)}>{recordPage.text}</SimpleButton>
             </IsLoginUser>
           </div>
-          <IsLoginUser isLoginUser={auth.data?.name == user?.name}>
+          <IsLoginUser isLoginUser={auth.userId== user?.id}>
           <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.push(plantCreatePage.path)} css={{cursor: "pointer"}}>
             <AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></a></p>
           </IsLoginUser>
