@@ -109,7 +109,8 @@ const AccountUpdate = ({}) => {
     if(authUser.status == "succeeded") {
       const _formData = Object.assign(formData, {
         name: authUser?.data?.name,
-        description: authUser?.data?.description
+        description: authUser?.data?.description,
+        email: authUser?.data?.email
       });
       if(authUser.data?.coverImage) {
         setFileCover(appPath + authUser.data?.coverImage);
@@ -125,7 +126,6 @@ const AccountUpdate = ({}) => {
     if(!formData) {
       setDisabled(true);
     } else {
-      
     }
   },[])
 
@@ -202,6 +202,11 @@ const AccountUpdate = ({}) => {
     setFormData({..._formData});
   }
 
+  const handleEmail = (email: string) => {
+    const _formData = Object.assign(formData, {email});
+    setFormData({..._formData});
+  } 
+
   const handleMessageReset = () => {
     setMessage('');
   }
@@ -235,6 +240,12 @@ const AccountUpdate = ({}) => {
             type="text"
             handleInput={(e) => handleName(e.target.value)}
             text={formData.name ?? ""}
+            /><br /><br />
+            <Input
+            labelText="メールアドレス"
+            type="text"
+            handleInput={(e) => handleEmail(e.target.value)}
+            text={formData.email ?? ""}
             /><br /><br />
             <TextArea
             labelText="説明"

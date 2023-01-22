@@ -40,6 +40,8 @@ const AccountUpdate = ({}) => {
   const [newPassword, setNewPassword] = useState('');
   const [errors, setErrors] = useState<Error[]>([]);
 
+  const [disabled, setDisabled] = useState(true);
+
   const childPages = [
     {
     href: rootPage.path + authUser?.data?.name,
@@ -62,17 +64,17 @@ const AccountUpdate = ({}) => {
 
   const handleClick = () => {
       dispatch(updateAuthUserPassword({currentPassword, newPassword}))
-      .unwrap()
-      .then(payload => {
-        console.log({ payload });
-      })
-      .catch(error => {
-          const errors = JSON.parse(error.message).errors;
-          setErrors(errors);
-      }).catch(error => {
-        console.log(error);
-      });
   }
+
+  useEffect(() => {
+    console.log(currentPassword == '');
+    console.log(newPassword == '');
+    if(currentPassword != '' && newPassword != '') {
+      setDisabled(false)
+    } else {
+      setDisabled(true)
+    }
+  },[currentPassword, newPassword])
 
   return (
     <Auth>
@@ -89,14 +91,14 @@ const AccountUpdate = ({}) => {
             text={currentPassword ?? ""}
             /><br /><br />
             <Input
-            labelText="新しいパスワード"
+            labelText="新しいパスワード(8文字以上20文字以内)"
             type="password"
             handleInput={(e) => setNewPassword(e.target.value)}
             text={newPassword ?? ""}
             /><br /><br />
           </div>
           <div css={submitAreaCss}> 
-            <Button handleClick={handleClick}>更新</Button>
+            <Button handleClick={handleClick} disabled={disabled}>更新</Button>
           </div>
          </div>
         </div>
