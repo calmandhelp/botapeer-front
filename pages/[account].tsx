@@ -11,7 +11,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import Divider from "style/Divider";
-import { accountUpdatePage, recordPage, plantCreatePage } from "constants/pageConstants";
+import { accountUpdatePage, plantRecordPage, plantCreatePage } from "constants/pageConstants";
 import { appPath } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
 import { User } from "model/user";
@@ -201,7 +201,7 @@ const Account = ({user}: Props) => {
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
             <IsLoginUser isLoginUser={auth.userId== user?.id}>
-            <SimpleButton handleClick={() => router.push(recordPage.path)}>{recordPage.text}</SimpleButton>
+            <SimpleButton handleClick={() => router.push(plantRecordPage.path)}>{plantRecordPage.text}</SimpleButton>
             </IsLoginUser>
           </div>
           <ul css={ListUlCss}>

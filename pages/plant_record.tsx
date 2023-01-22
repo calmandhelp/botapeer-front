@@ -8,7 +8,7 @@ import { selectAuth } from "redux/slice/authSlice";
 import { selectUser, fetchUserById, fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, recordPage, rootPage } from "constants/pageConstants";
+import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
 import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import DatePicker from 'components/DatePicker';
@@ -65,7 +65,7 @@ const Record = ({}) => {
   ]
 
   const currentPage = {
-    label: recordPage.text
+    label: plantRecordPage.text
   }
   const breadCrumb = {
     childPages: childPages,
@@ -80,7 +80,7 @@ const Record = ({}) => {
     <Auth>
       <Layout breadCrumbProps={breadCrumb}>
         <div css={WrapCss}>
-        <h2>{recordPage.text}</h2>
+        <h2>{plantRecordPage.text}</h2>
         <Divider />
          <div css={InnerCss}>
           <div css={InputsCss}>
