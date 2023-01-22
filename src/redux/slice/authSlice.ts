@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import { login, LoginRequest, AuthInfo } from 'util/redux/authUtils';
 import { getIdByAccessToken } from 'util/redux/apiBaseUtils';
+import { ACCESS_TOKEN } from 'constants/apiConstants';
 
 export type AuthData = {
   status: "idle" | "pending" | "succeeded" | "failed",

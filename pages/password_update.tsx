@@ -64,11 +64,14 @@ const AccountUpdate = ({}) => {
 
   const handleClick = () => {
       dispatch(updateAuthUserPassword({currentPassword, newPassword}))
+      .unwrap()
+      .catch(error => {
+          const errors = JSON.parse(error.message).errors;
+          setErrors(errors);
+      })
   }
 
   useEffect(() => {
-    console.log(currentPassword == '');
-    console.log(newPassword == '');
     if(currentPassword != '' && newPassword != '') {
       setDisabled(false)
     } else {

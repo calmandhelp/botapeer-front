@@ -27,12 +27,12 @@ const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props)
   >
     <CustomeAlert
     onClose={handleCloseAlert}
-    severity={errors ? "error" : "success"}
+    severity={errors?.length == 0 ? "success" : "error"}
     sx={{ width: '100%', background: 'primary', color: "#fff", fontWeight: "bold" }}>
     { message ?? <></>}
-    { errors?.map((e)=> {
+    { errors?.length != 0 ? errors?.map((e)=> {
       return <>{e.message}<br/></>
-    }) ?? <></>}
+    }) : <></>}
   </CustomeAlert>
   </Snackbar>
   )

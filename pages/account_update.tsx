@@ -17,6 +17,7 @@ import Link from "next/link";
 import { User } from "model/user";
 import { selectAuth } from "redux/slice/authSlice";
 import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
+import { Error } from "util/redux/apiBaseUtils";
 
 const WrapCss = css`
   height: 100%;
@@ -95,6 +96,7 @@ const AccountUpdate = ({}) => {
   const [disabled, setDisabled] = useState(false);
   const fileProfileInput = useRef<HTMLInputElement>(null);
   const fileCoverInput = useRef<HTMLInputElement>(null);
+  const [errors, setErrors] = useState<Error[]>([]);
 
   useEffect(() => {
     const id = auth?.userId;
@@ -145,9 +147,7 @@ const AccountUpdate = ({}) => {
     currentPage: currentPage
   }
 
-  const handleClick = () => {
-
-    console.log(formData);
+  const handleClick = async() => {
 
     const submitData = new FormData();
 
@@ -163,13 +163,20 @@ const AccountUpdate = ({}) => {
       submitData.append("coverImage", _file)
     }
 
-    dispatch(updateAuthUser(submitData)).then((res) => {
+    const updateAuthUserResultAction = await dispatch(updateAuthUser(submitData))
+    if(updateAuthUser.fulfilled.match(updateAuthUserResultAction)) {
       if(authUser.data?.id) {
-        dispatch(fetchAuthUserById(authUser.data?.id)).then(() => {
+        const FetchAuthUserByIdResultAction = await dispatch(fetchAuthUserById(authUser.data?.id))
+        if(fetchAuthUserById.fulfilled.match(FetchAuthUserByIdResultAction)) {
           setMessage("更新しました");
-        })
+        }
       }
-    })
+    } else {
+      if(updateAuthUserResultAction.payload) {
+      } else {
+        setErrors(JSON.parse(updateAuthUserResultAction.error.message as any).errors);
+      }
+    }
   }
 
   const handleCoverUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -209,11 +216,12 @@ const AccountUpdate = ({}) => {
 
   const handleMessageReset = () => {
     setMessage('');
+    setErrors([]);
   }
 
   return (
     <Auth>
-      <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
         <div css={WrapCss}>
         <h2>{accountUpdatePage.text}</h2>
         <Divider />

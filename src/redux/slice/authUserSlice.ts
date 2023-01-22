@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import { fetchAuthUserByIdBase, updateAuthUserBase, updateAuthUserPasswordBase, updateAuthUserPasswordRequest } from 'util/redux/authUserUtils';
-import { fetchUserByIdBase } from 'util/redux/userUtils';
 import { User } from 'model/user';
 
 export type AuthData = {
@@ -17,7 +16,7 @@ const initialState: AuthData = {
 };
 
 export const fetchAuthUserById = createAsyncThunk(
-  'auth/fetchAuthUserStatus',
+  'authUser/fetchAuthUserStatus',
   async (userId: number) => {
     const response = await fetchAuthUserByIdBase(userId);
     return response
@@ -25,7 +24,7 @@ export const fetchAuthUserById = createAsyncThunk(
 )
 
 export const updateAuthUser = createAsyncThunk(
-  'auth/updateUserStatus',
+  'authUser/updateAuthUserStatus',
   async (data: FormData) => {
     const response = await updateAuthUserBase(data);
     return response
@@ -33,7 +32,7 @@ export const updateAuthUser = createAsyncThunk(
 )
 
 export const updateAuthUserPassword = createAsyncThunk(
-  'auth/updateUserPasswordStatus',
+  'authUser/updateUserPasswordStatus',
   async (data: updateAuthUserPasswordRequest) => {
     const response = await updateAuthUserPasswordBase(data);
     return response;
