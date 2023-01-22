@@ -19,6 +19,8 @@ type Props = {
 }
 
 const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props) => {
+  console.log(errors?.length);
+  console.log(errors);
   return(
     <Snackbar
     open={open}
@@ -27,7 +29,7 @@ const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props)
   >
     <CustomeAlert
     onClose={handleCloseAlert}
-    severity={errors?.length == 0 ? "success" : "error"}
+    severity={errors?.length == 0 || errors == undefined ? "success" : "error"}
     sx={{ width: '100%', background: 'primary', color: "#fff", fontWeight: "bold" }}>
     { message ?? <></>}
     { errors?.length != 0 ? errors?.map((e)=> {

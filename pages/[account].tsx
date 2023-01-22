@@ -204,10 +204,6 @@ const Account = ({user}: Props) => {
             <SimpleButton handleClick={() => router.push(recordPage.path)}>{recordPage.text}</SimpleButton>
             </IsLoginUser>
           </div>
-          <IsLoginUser isLoginUser={auth.userId== user?.id}>
-          <p css={FlowerCss}>{plantCreatePage.text}<a onClick={() => router.push(plantCreatePage.path)} css={{cursor: "pointer"}}>
-            <AddCircleOutlineIcon style={{"margin": "-1px 0 0 5px"}} /></a></p>
-          </IsLoginUser>
           <ul css={ListUlCss}>
             <li>
               <Image
@@ -216,8 +212,7 @@ const Account = ({user}: Props) => {
                 height={180}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2022/12/15-</span>
+              />
             </li>
             <li>
               <Image
@@ -226,8 +221,7 @@ const Account = ({user}: Props) => {
                 height={180}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2022/12/15-</span>
+              />
             </li>
             <li>
               <Image
@@ -236,8 +230,7 @@ const Account = ({user}: Props) => {
                 height={180}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2022/12/15-</span>
+              />
             </li>
             <li>
               <Image
@@ -246,8 +239,7 @@ const Account = ({user}: Props) => {
                 height={180}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2022/12/15-</span>
+              />
             </li>
           </ul>
           <Divider propCss={borderCss} />
@@ -261,8 +253,7 @@ const Account = ({user}: Props) => {
                 height={180}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2021/05/15 - 2022/12/15</span>
+              />
             </li>
           </ul>
           </div>
