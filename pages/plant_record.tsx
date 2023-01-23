@@ -60,9 +60,9 @@ const PlantRecord = ({}) => {
   }
 
   const handleCreate = async () => {
-    // if(!title || labelList.length == 0) {
-    //   return
-    // }
+    if(!title || labelList.length == 0) {
+      return
+    }
     const labels = labelList.map((label) => {
       return {name: label}
     })
@@ -105,11 +105,11 @@ const PlantRecord = ({}) => {
   }
 
   useEffect(() => {
-    // if(!title || labelList.length == 0) {
-    //   setButtonDisabled(true);
-    // } else {
+    if(!title || labelList.length == 0) {
+      setButtonDisabled(true);
+    } else {
       setButtonDisabled(false);
-    // }
+    }
   },[title, labelList])
 
   const handleMessageReset = () => {
