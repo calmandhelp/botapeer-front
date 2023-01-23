@@ -1,20 +1,19 @@
-import React, { ReactNode, useState, useEffect } from "react";
+import React, { ReactNode, useState, useEffect, RefObject, useRef, createRef } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from 'redux/hook';
-import { selectAuth } from "redux/slice/authSlice";
-import { selectUser, fetchUserById, fetchUsersByName } from "redux/slice/userSlice";
+import { fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
 import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
-import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
-import DatePicker from 'components/DatePicker';
 import Button from "components/Button";
+import Inputs from "components/InputsChild";
 import { InnerCss } from "style/common";
 import { selectAuthUser } from "redux/slice/authUserSlice";
+import { AddCircleOutline } from "@mui/icons-material";
+import InputsChild from "components/InputsChild";
 
 const WrapCss = css`
   height: 100%;
@@ -32,21 +31,19 @@ const InputsCss = css`
   flex: 1;
 `
 
+const LabelTextCss = css`
+  padding: 0 0 10px 0;
+  display: flex;
+`
+
 const Record = ({}) => {
-  const [open, setOpen] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
-  const login = router.query.login;
-  const logout = router.query.logout;
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState<Date | null>(new Date());
-
-  useEffect(()=>{
-    if(login || logout) {
-      setOpen(true);
-    }
-  },[login, logout])
+  const [label, setLabel] = useState("");
+  const [inputList, setInputList] = useState<any[]>([]);
+  const inputRefs = useRef<RefObject<HTMLInputElement>[]>([])
 
   useEffect(() => {
     const userName = authUser.data?.name;
@@ -76,6 +73,27 @@ const Record = ({}) => {
 
   }
 
+  const onAddBtnClick = (e: any) => {
+    const index = inputList.length
+    inputRefs.current[index] = createRef<HTMLInputElement>()
+    console.log(index);
+    const _inputList = inputList.concat(
+    <InputsChild
+     type="text" 
+     myref={inputRefs.current[index]}
+     mykey={index} 
+     key={index} />);
+    setInputList(_inputList);
+  };
+
+  useEffect(() => {
+    if(inputRefs.current) {
+      console.log(inputList.length)
+      console.log(inputRefs.current[inputList.length]?.current?.value);
+    }
+  },[inputList])
+
+
   return (
     <Auth>
       <Layout breadCrumbProps={breadCrumb}>
@@ -90,14 +108,16 @@ const Record = ({}) => {
             handleInput={(e) => setTitle(e.target.value)}
             text={title}
             /><br /><br />
-            <DatePicker
-            handleChange={(date) => setDate(date)}
-            value={date}
-            labelText="日付"
-            />
+          <div css={LabelTextCss}>
+            登録する植物（最大20までまとめて記録できます）
+            <a onClick={onAddBtnClick}>
+              <AddCircleOutline sx={{margin: "-1px 0 0 4px", cursor: "pointer"}} />
+            </a> 
+          </div>
+          {inputList}
           </div>
           <div css={submitAreaCss}> 
-            <Button handleClick={handleClick}>投稿</Button>
+            <Button handleClick={handleClick}>作成</Button>
           </div>
          </div>
         </div>
