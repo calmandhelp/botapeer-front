@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import userReducer from 'redux/slice/userSlice'
 import authReducer from 'redux/slice/authSlice'
 import authUserReducer from 'redux/slice/authUserSlice'
+import plantRecordReducer from 'redux/slice/plantRecordSlice'
 import logger from 'redux-logger'
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   authUser: authUserReducer,
   users: userReducer, 
+  plantRecords: plantRecordReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

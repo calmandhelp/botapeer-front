@@ -1,7 +1,6 @@
 import React, { ReactNode, useState, useEffect, RefObject, useRef, createRef } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
-import { useRouter } from 'next/router'
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { fetchUsersByName } from "redux/slice/userSlice";
 import { Layout } from 'Layout/Layout';
@@ -9,11 +8,13 @@ import Divider from "style/Divider";
 import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
 import { css } from '@emotion/react';
 import Button from "components/Button";
-import Inputs from "components/InputsChild";
 import { InnerCss } from "style/common";
 import { selectAuthUser } from "redux/slice/authUserSlice";
-import { AddCircleOutline } from "@mui/icons-material";
-import InputsChild from "components/InputsChild";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { useTheme } from "@material-ui/core/styles";
+import { deleteColor, primaryColor } from "../styles/Theme";
+import { createPlantRecord } from "redux/slice/plantRecordSlice";
+import { Error } from "util/redux/apiBaseUtils";
 
 const WrapCss = css`
   height: 100%;
@@ -30,29 +31,18 @@ const submitAreaCss = css`
 const InputsCss = css`
   flex: 1;
 `
-
-const LabelTextCss = css`
-  padding: 0 0 10px 0;
-  display: flex;
-`
-
-const Record = ({}) => {
-  const router = useRouter();
+const PlantRecord = ({}) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
-  const [inputList, setInputList] = useState<any[]>([]);
-  const inputRefs = useRef<RefObject<HTMLInputElement>[]>([])
-
-  useEffect(() => {
-    const userName = authUser.data?.name;
-    if(!userName) {
-      return;
-    } else {
-      dispatch(fetchUsersByName(userName));
-    }
-  },[authUser, dispatch])
+  const [composing, setComposition] = useState(false);
+  const startComposition = () => setComposition(true);
+  const endComposition = () => setComposition(false);
+  const [labelList, setLabelList] = useState<string[]>([]);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState<Error[]>([]);
 
   const childPages = [
     {
@@ -69,34 +59,67 @@ const Record = ({}) => {
     currentPage: currentPage
   }
 
-  const handleClick = () => {
-
+  const handleCreate = async () => {
+    // if(!title || labelList.length == 0) {
+    //   return
+    // }
+    const labels = labelList.map((label) => {
+      return {name: label}
+    })
+    const data = {
+      title,
+      labels
+    }
+    const createPlantRecordAction = await dispatch(createPlantRecord(data))
+    if(createPlantRecord.fulfilled.match(createPlantRecordAction)) {
+      setMessage("更新しました");
+      setLabelList([]);
+      setTitle("")
+    } else {
+      if(createPlantRecordAction.payload) {
+      } else {
+        setErrors(JSON.parse(createPlantRecordAction.error.message as any).errors);
+      }
+    }
   }
 
-  const onAddBtnClick = (e: any) => {
-    const index = inputList.length
-    inputRefs.current[index] = createRef<HTMLInputElement>()
-    console.log(index);
-    const _inputList = inputList.concat(
-    <InputsChild
-     type="text" 
-     myref={inputRefs.current[index]}
-     mykey={index} 
-     key={index} />);
-    setInputList(_inputList);
-  };
+  const handleAdd = () => {
+    if(label && labelList.length < 20) {
+      setLabelList(labelList.concat(label));
+      setLabel("");
+    }
+  }
+
+  const onKeyDown = (e: any) => {
+    switch (e.key) {
+      case  "Enter":
+        if(composing) break;
+        handleAdd();
+    }
+  }
+  
+  const handleDeleteLabel = (index: number) => {
+    const _labelList = labelList.concat();
+    _labelList.splice(index, 1);
+    setLabelList(_labelList);
+  }
 
   useEffect(() => {
-    if(inputRefs.current) {
-      console.log(inputList.length)
-      console.log(inputRefs.current[inputList.length]?.current?.value);
-    }
-  },[inputList])
+    // if(!title || labelList.length == 0) {
+    //   setButtonDisabled(true);
+    // } else {
+      setButtonDisabled(false);
+    // }
+  },[title, labelList])
 
+  const handleMessageReset = () => {
+    setMessage('');
+    setErrors([]);
+  }
 
   return (
     <Auth>
-      <Layout breadCrumbProps={breadCrumb}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
         <div css={WrapCss}>
         <h2>{plantRecordPage.text}</h2>
         <Divider />
@@ -108,16 +131,30 @@ const Record = ({}) => {
             handleInput={(e) => setTitle(e.target.value)}
             text={title}
             /><br /><br />
-          <div css={LabelTextCss}>
-            登録する植物（最大20までまとめて記録できます）
-            <a onClick={onAddBtnClick}>
-              <AddCircleOutline sx={{margin: "-1px 0 0 4px", cursor: "pointer"}} />
-            </a> 
-          </div>
-          {inputList}
+          <Input
+            labelText="登録する植物（最大20までまとめて記録できます）"
+            type="text"
+            handleInput={(e) => setLabel(e.target.value)}
+            text={label}
+            handleAdd={handleAdd}
+            onKeyDown={onKeyDown}
+            startComposition={startComposition}
+            endComposition={endComposition}
+            addIcon
+            /><br /><br />
+          <ul>
+          {labelList.map((item, index)=> {
+            return <>
+            <li key={index} style={{color: primaryColor, display: "flex"}}>
+              #{item} <a onClick={() => handleDeleteLabel(index)} key={index}>
+                <RemoveCircleOutlineIcon sx={{color: deleteColor, margin: "-1px 0 0 20px", cursor: "pointer"}} /></a>
+            </li>
+            </>
+          })}
+          </ul>
           </div>
           <div css={submitAreaCss}> 
-            <Button handleClick={handleClick}>作成</Button>
+            <Button handleClick={handleCreate} disabled={buttonDisabled}>作成</Button>
           </div>
          </div>
         </div>
@@ -126,4 +163,4 @@ const Record = ({}) => {
   );
 };
 
-export default Record;
+export default PlantRecord;

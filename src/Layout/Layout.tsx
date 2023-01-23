@@ -78,9 +78,11 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
 
   const handleCloseAlert = () => {
     setOpen(false);
-    if(handleMessageReset) {
-      handleMessageReset();
-    }
+    setTimeout(() => {
+      if(handleMessageReset) {
+        handleMessageReset();
+      }
+    },200)
   }
 
   return (

@@ -1,5 +1,6 @@
 import { css, Interpolation, Theme } from "@emotion/react";
-import { RefObject, useState } from "react";
+import { AddCircleOutline } from "@mui/icons-material";
+import { CompositionEventHandler, RefObject, useState } from "react";
 
 const InputCss = css`
   width: 100%;
@@ -27,6 +28,8 @@ type InputProps = {
   mykey?: number
   style?: Interpolation<Theme>
   myref?: RefObject<HTMLInputElement>
+  startComposition?: CompositionEventHandler<HTMLInputElement> | undefined
+  endComposition?: CompositionEventHandler<HTMLInputElement> | undefined
 };
 
 const Input = (props: InputProps) => {
@@ -40,7 +43,12 @@ const Input = (props: InputProps) => {
   return (
     <>
     <div css={LabelTextCss}>
-      {props?.labelText}
+    {props?.labelText}
+    {props.addIcon ?
+    <a onClick={props.handleAdd}>
+      <AddCircleOutline sx={{margin: "-1px 0 0 4px", cursor: "pointer"}} />
+    </a>
+    :<></>}
     </div>
     <input
       ref={props.myref}
@@ -50,6 +58,8 @@ const Input = (props: InputProps) => {
       value={props.text}
       onChange={props.handleInput}
       onKeyDown={props.onKeyDown}
+      onCompositionStart={props.startComposition}
+      onCompositionEnd={props.endComposition}
     />
     </>
   );

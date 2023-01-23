@@ -19,8 +19,6 @@ type Props = {
 }
 
 const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props) => {
-  console.log(errors?.length);
-  console.log(errors);
   return(
     <Snackbar
     open={open}

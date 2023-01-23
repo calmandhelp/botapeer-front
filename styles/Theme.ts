@@ -1,6 +1,9 @@
 import { createTheme } from "@material-ui/core/styles";
 
-const theme = createTheme({
+export const primaryColor = "#5EB476"
+export const deleteColor = "#d10000"
+
+export const theme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
@@ -12,7 +15,7 @@ const theme = createTheme({
   },
   palette: {
     primary: {
-      main: "#5EB476",
+      main: primaryColor,
     },
     background: {
       default: "#ededed"
