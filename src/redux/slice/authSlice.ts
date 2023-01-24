@@ -32,6 +32,7 @@ export const authSlice = createSlice({
     logout: (state) =>{
       state.accessToken = ""
       state.isLogin = false;
+      state.userId = 0
     }
   },
   extraReducers: (builder) => {
