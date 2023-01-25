@@ -11,6 +11,13 @@ export function createPlantRecordBase(data: PlantRecordRequest): Promise<PlantRe
   });
 }
 
+export function fetchPlantRecordBase(userId: number): Promise<PlantRecordResponse[]> {
+  return request({
+      url: API_BASE_URL + "/api/users/" + userId + "/plant_records",
+      method: 'GET',
+  });
+}
+
 export type PlantRecordResponse = PlantRecord
 
 export type PlantRecordRequest = {

@@ -1,7 +1,5 @@
 import { ACCESS_TOKEN, API_BASE_URL } from "constants/apiConstants";
 import { User } from "model/user";
-import { useAppSelector } from "redux/hook";
-import { selectAuth } from "redux/slice/authSlice";
 import { store } from "redux/store/store";
 import { getIdByAccessToken, multiPartRequest, request } from "./apiBaseUtils";
 import { UserResponse } from "./userUtils";

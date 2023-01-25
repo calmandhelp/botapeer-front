@@ -85,7 +85,7 @@ const CoverImageCss = css`
   }
 `
 
-const AccountUpdate = ({}) => {
+const AccountUpdateView = ({}) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector(selectAuth);
   const authUser = useAppSelector(selectAuthUser);
@@ -277,4 +277,4 @@ const AccountUpdate = ({}) => {
   );
 };
 
-export default AccountUpdate;
+export default AccountUpdateView;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Context } from "react";
 import Auth  from 'components/Auth';
 import Input from "components/Input";
 import { useAppDispatch, useAppSelector } from 'redux/hook';
@@ -10,6 +10,9 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import { Error } from "util/redux/apiBaseUtils";
 import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlice";
+import { API_BASE_URL } from "constants/apiConstants";
+import { GetServerSidePropsContext } from "next";
+import { PlantRecord } from "model/plantRcord";
 
 const WrapCss = css`
   height: 100%;
@@ -33,7 +36,11 @@ const submitAreaCss = css`
 const InputsCss = css`
   flex: 1;
 `
-const PasswordUpdateView = ({}) => {
+type Props = {
+  plantRecord: PlantRecord
+}  
+
+const PlantRecordView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -110,4 +117,17 @@ const PasswordUpdateView = ({}) => {
   );
 };
 
-export default PasswordUpdateView;
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const { plant_record } = context.query;
+  const res = await fetch(API_BASE_URL + "/plant_records/" + plant_record);
+  const data = await res.json()
+  
+  if(data) {
+    return {
+      notFound: true
+    }
+  }
+  return { props: { plantRecord: data } }
+}
+
+export default PlantRecordView;

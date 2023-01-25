@@ -9,12 +9,13 @@ import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants"
 import { css } from '@emotion/react';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
-import { selectAuthUser } from "redux/slice/authUserSlice";
+import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useTheme } from "@material-ui/core/styles";
 import { deleteColor, primaryColor } from "../styles/Theme";
 import { createPlantRecord } from "redux/slice/plantRecordSlice";
 import { Error } from "util/redux/apiBaseUtils";
+import { selectAuth } from "redux/slice/authSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -31,9 +32,10 @@ const submitAreaCss = css`
 const InputsCss = css`
   flex: 1;
 `
-const PlantRecord = ({}) => {
+const CreatePlantRecordView = ({}) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
+  const auth = useAppSelector(selectAuth);
   const [title, setTitle] = useState("");
   const [label, setLabel] = useState("");
   const [composing, setComposition] = useState(false);
@@ -72,7 +74,7 @@ const PlantRecord = ({}) => {
     }
     const createPlantRecordAction = await dispatch(createPlantRecord(data))
     if(createPlantRecord.fulfilled.match(createPlantRecordAction)) {
-      setMessage("更新しました");
+      setMessage("作成しました");
       setLabelList([]);
       setTitle("")
     } else {
@@ -117,6 +119,10 @@ const PlantRecord = ({}) => {
     setErrors([]);
   }
 
+  useEffect(() => {
+    dispatch(fetchAuthUserById(auth?.userId))
+  },[])
+
   return (
     <Auth>
       <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
@@ -131,7 +137,18 @@ const PlantRecord = ({}) => {
             handleInput={(e) => setTitle(e.target.value)}
             text={title}
             /><br /><br />
-          <Input
+            <Input
+            labelText="登録する植物（最大20までまとめて記録できます）"
+            type="text"
+            handleInput={(e) => setLabel(e.target.value)}
+            text={label}
+            handleAdd={handleAdd}
+            onKeyDown={onKeyDown}
+            startComposition={startComposition}
+            endComposition={endComposition}
+            addIcon
+            /><br /><br />
+            <Input
             labelText="登録する植物（最大20までまとめて記録できます）"
             type="text"
             handleInput={(e) => setLabel(e.target.value)}
@@ -143,14 +160,14 @@ const PlantRecord = ({}) => {
             addIcon
             /><br /><br />
           <ul>
-          {labelList.map((item, index)=> {
+          {/* {labelList.map((item, index)=> {
             return <>
             <li key={index} style={{color: primaryColor, display: "flex"}}>
               #{item} <a onClick={() => handleDeleteLabel(index)} key={index}>
                 <RemoveCircleOutlineIcon sx={{color: deleteColor, margin: "-1px 0 0 20px", cursor: "pointer"}} /></a>
             </li>
             </>
-          })}
+          })} */}
           </ul>
           </div>
           <div css={submitAreaCss}> 
@@ -163,4 +180,4 @@ const PlantRecord = ({}) => {
   );
 };
 
-export default PlantRecord;
+export default CreatePlantRecordView;

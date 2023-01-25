@@ -82,9 +82,9 @@ const Header = ({}) => {
     })
   };
 
-  useEffect(() => {
-    dispatch(fetchAuthUserById(auth.userId))
-  },[auth])
+  // useEffect(() => {
+  //   dispatch(fetchAuthUserById(auth.userId))
+  // },[auth])
 
   return (
     <header css={HeaderCss}>

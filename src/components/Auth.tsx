@@ -19,7 +19,6 @@ const Auth = ({ children }: Props) => {
 
     useEffect(() => {
       if (!auth.isLogin && router.pathname != rootPage.path) {
-        console.log(router.pathname);
         router.push(rootPage.path);
       }
     }, [router, auth]);

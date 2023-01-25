@@ -16,6 +16,9 @@ import { appPath } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
 import { User } from "model/user";
 import { API_BASE_URL } from "constants/apiConstants";
+import { fetchPlantRecord, selectPlantRecord } from "redux/slice/plantRecordSlice";
+import { PlantRecordResponse } from "util/redux/plantRecordUtils";
+import { PlantRecord } from "model/plantRcord";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -107,13 +110,9 @@ const InfoCss = css`
 const DiscriptionCss = css `
   padding: 10px 0 0 0;
 `
-
-const FlowerCss = css`
-  display: flex;
-`
-
 const ListUlCss = css`
   display: flex;
+  flex-wrap: wrap;
   li {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -139,10 +138,12 @@ type Props = {
   user: User
 }
 
-const Account = ({user}: Props) => {
+const AccountView = ({user}: Props) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const auth = useAppSelector(selectAuth);
+  const plantRecords = useAppSelector(selectPlantRecord);
+  const dispatch = useAppDispatch();
   const login = router.query.login;
   const logout = router.query.logout;
 
@@ -151,6 +152,40 @@ const Account = ({user}: Props) => {
       setOpen(true);
     }
   },[login, logout])
+
+  useEffect(() => {
+    if(user?.id) {
+      dispatch(fetchPlantRecord(user?.id))
+    }
+  },[user])
+
+  const makePlantRecord = () => {
+    if(plantRecords) {
+      const plantRecordsData = plantRecords?.data;
+      if(Array.isArray(plantRecordsData)) {
+        return plantRecordsData?.map((plantRecord, index) => {
+            if(plantRecord?.posts.length == 0) {
+              console.log(plantRecord?.posts.length);
+              return <li key={index}><Image
+              src={"/images/no_image.png"}
+              width={180}
+              height={180}
+              alt="植物"
+              css={{ objectFit: "cover" }}
+              /></li>
+            } else {
+              return <li key={index}><Image
+              src={plantRecord?.posts[0]?.image_url ?? "/images/no_image.png"}
+              width={180}
+              height={180}
+              alt="植物"
+              css={{ objectFit: "cover" }}
+              /></li>
+            }
+        })
+      }
+    }
+  }
 
   return (
     <>
@@ -205,42 +240,7 @@ const Account = ({user}: Props) => {
             </IsLoginUser>
           </div>
           <ul css={ListUlCss}>
-            <li>
-              <Image
-                src="/images/image1.jpg"
-                width={180}
-                height={180}
-                alt="植物"
-                css={{ objectFit: "cover" }}
-              />
-            </li>
-            <li>
-              <Image
-                src="/images/image1.jpg"
-                width={180}
-                height={180}
-                alt="植物"
-                css={{ objectFit: "cover" }}
-              />
-            </li>
-            <li>
-              <Image
-                src="/images/image1.jpg"
-                width={180}
-                height={180}
-                alt="植物"
-                css={{ objectFit: "cover" }}
-              />
-            </li>
-            <li>
-              <Image
-                src="/images/image1.jpg"
-                width={180}
-                height={180}
-                alt="植物"
-                css={{ objectFit: "cover" }}
-              />
-            </li>
+            {makePlantRecord()}
           </ul>
           <Divider propCss={borderCss} />
           <h2>以前 🗓</h2>
@@ -268,6 +268,7 @@ export async function getServerSideProps({ query }: any) {
   const username = query.account
   const res = await fetch(API_BASE_URL + "/api/users?username=" + username);
   const data = await res.json()
+  
   if(data.length == 0) {
     return {
       notFound: true
@@ -276,5 +277,4 @@ export async function getServerSideProps({ query }: any) {
   return { props: { user: data[0] } }
 }
 
-
-export default Account;
+export default AccountView;
