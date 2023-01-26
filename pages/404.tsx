@@ -2,6 +2,7 @@ import React, { ReactNode, useState, useEffect } from "react";
 import { useRouter } from 'next/router'
 import { Layout } from 'Layout/Layout';
 import { css } from '@emotion/react';
+import PersistLogin from "components/PersistLogin";
 
 const WrapCss = css`
   height: 100%;
@@ -21,9 +22,11 @@ const InputsCss = css`
 
 const Record = ({}) => {
   return (
-      <Layout>
-        <>ご指定いただいたページは存在しませんでした</>
-     </Layout>
+    <PersistLogin>
+        <Layout>
+          <>ご指定いただいたページは存在しませんでした</>
+      </Layout>
+     </PersistLogin>
   );
 };
 

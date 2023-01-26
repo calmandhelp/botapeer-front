@@ -10,6 +10,7 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import { Error } from "util/redux/apiBaseUtils";
 import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlice";
+import PersistLogin from "components/PersistLogin";
 
 const WrapCss = css`
   height: 100%;
@@ -85,7 +86,7 @@ const PasswordUpdateView = ({}) => {
         <div css={WrapCss}>
         <h2>{passwordUpdatePage.text}</h2>
         <Divider />
-         <div css={InnerCss}>
+        <div css={InnerCss}>
           <div css={InputsCss}>
             <Input
             labelText="現在のパスワード"
@@ -103,9 +104,9 @@ const PasswordUpdateView = ({}) => {
           <div css={submitAreaCss}> 
             <Button handleClick={handleClick} disabled={disabled}>更新</Button>
           </div>
-         </div>
         </div>
-     </Layout>
+        </div>
+      </Layout>
     </Auth>
   );
 };

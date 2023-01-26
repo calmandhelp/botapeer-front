@@ -19,6 +19,7 @@ import { API_BASE_URL } from "constants/apiConstants";
 import { fetchPlantRecord, selectPlantRecord } from "redux/slice/plantRecordSlice";
 import { PlantRecordResponse } from "util/redux/plantRecordUtils";
 import { PlantRecord } from "model/plantRcord";
+import PersistLogin from "components/PersistLogin";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -188,7 +189,8 @@ const AccountView = ({user}: Props) => {
   }
 
   return (
-    <>
+    <PersistLogin>
+      <>
       <Header />
       <div css={AccountInfoCss}>
         <div css={CoverCss}>
@@ -260,7 +262,8 @@ const AccountView = ({user}: Props) => {
         </div>
       </main>
       <Footer />
-    </>
+      </>
+    </PersistLogin>
   );
 };
 

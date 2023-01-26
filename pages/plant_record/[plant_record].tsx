@@ -13,6 +13,8 @@ import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlic
 import { API_BASE_URL } from "constants/apiConstants";
 import { GetServerSidePropsContext } from "next";
 import { PlantRecord } from "model/plantRcord";
+import { fetchPlaces, selectPlace } from "redux/slice/placeSlice";
+import PersistLogin from "components/PersistLogin";
 
 const WrapCss = css`
   height: 100%;
@@ -87,7 +89,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
   },[currentPassword, newPassword])
 
   return (
-    <Auth>
+    <PersistLogin>
       <Layout breadCrumbProps={breadCrumb} errors={errors}>
         <div css={WrapCss}>
         <h2>{passwordUpdatePage.text}</h2>
@@ -113,7 +115,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
          </div>
         </div>
      </Layout>
-    </Auth>
+    </PersistLogin>
   );
 };
 

@@ -2,6 +2,7 @@ import { createTheme } from "@material-ui/core/styles";
 
 export const primaryColor = "#5EB476"
 export const deleteColor = "#d10000"
+export const backgroundColor = "#ededed"
 
 export const theme = createTheme({
   breakpoints: {

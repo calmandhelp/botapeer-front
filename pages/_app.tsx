@@ -2,9 +2,16 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppPropsWithLayout } from "next/app";
 import "../styles/global.css";
 import theme from "../styles/Theme";
-import { store, persistor  } from 'redux/store/store'
+import { store } from 'redux/store/store'
 import { Provider } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
+import { useEffect } from "react";
+import { ACCESS_TOKEN } from "constants/apiConstants";
+import jwtDecode from "jwt-decode";
+import { Token } from "util/redux/apiBaseUtils";
+import { logout, persitLogin, selectAuth } from "redux/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "redux/hook";
+import { useRouter } from "next/router";
+import { rootPage } from "constants/pageConstants";
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
@@ -12,12 +19,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return getLayout(
     <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} />
       </ThemeProvider>
-    </PersistGate>
     </Provider>
   );
 }

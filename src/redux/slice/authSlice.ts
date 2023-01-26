@@ -29,10 +29,16 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    persitLogin: (state, action: PayloadAction<AuthInfo>) => {
+      state.accessToken = action.payload.accessToken;
+      state.userId = action.payload.userId;
+      state.isLogin = action.payload.isLogin;
+    },
     logout: (state) =>{
+      localStorage.removeItem(ACCESS_TOKEN)
       state.accessToken = ""
-      state.isLogin = false;
       state.userId = 0
+      state.isLogin = false;
     }
   },
   extraReducers: (builder) => {
@@ -40,6 +46,7 @@ export const authSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
+      localStorage.setItem(ACCESS_TOKEN, action.payload.accessToken);
       state.accessToken = action.payload.accessToken
       state.userId = getIdByAccessToken(action.payload.accessToken)
       state.status = "succeeded";
@@ -52,7 +59,7 @@ export const authSlice = createSlice({
   }
 })
 
-export const { logout } = authSlice.actions
+export const { persitLogin, logout } = authSlice.actions
 export const selectAuth = (state: RootState) => state.auth
 
 export default authSlice.reducer

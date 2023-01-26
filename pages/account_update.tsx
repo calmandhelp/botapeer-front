@@ -18,6 +18,7 @@ import { User } from "model/user";
 import { selectAuth } from "redux/slice/authSlice";
 import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
 import { Error } from "util/redux/apiBaseUtils";
+import PersistLogin from "components/PersistLogin";
 
 const WrapCss = css`
   height: 100%;
@@ -220,59 +221,59 @@ const AccountUpdateView = ({}) => {
   }
 
   return (
-    <Auth>
-      <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
-        <div css={WrapCss}>
-        <h2>{accountUpdatePage.text}</h2>
-        <Divider />
-         <div css={InnerCss}>
-          <div css={InputsCss}>
-           <label htmlFor="cover_image">
-            <div css={CoverCss}>
-              <div css={bgCircleCss}>
-                <label htmlFor="profile_image">
-                <div css={CircleCss}>
-                {fileProfile ?
-                <Image src={fileProfile} objectFit='cover' alt="profile image" layout='fill' css={ProfileImageCss} />
-                : null}
+      <Auth>
+        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
+          <div css={WrapCss}>
+          <h2>{accountUpdatePage.text}</h2>
+          <Divider />
+          <div css={InnerCss}>
+            <div css={InputsCss}>
+            <label htmlFor="cover_image">
+              <div css={CoverCss}>
+                <div css={bgCircleCss}>
+                  <label htmlFor="profile_image">
+                  <div css={CircleCss}>
+                  {fileProfile ?
+                  <Image src={fileProfile} objectFit='cover' alt="profile image" layout='fill' css={ProfileImageCss} />
+                  : null}
+                  </div>
+                  </label>
                 </div>
-                </label>
+                {fileCover ?
+                <Image src={fileCover} objectFit='cover' alt="cover image" layout='fill' css={CoverImageCss} />
+                : null}
               </div>
-              {fileCover ?
-              <Image src={fileCover} objectFit='cover' alt="cover image" layout='fill' css={CoverImageCss} />
-              : null}
+              </label>
+              <Input
+              labelText="名前"
+              type="text"
+              handleInput={(e) => handleName(e.target.value)}
+              text={formData.name ?? ""}
+              /><br /><br />
+              <Input
+              labelText="メールアドレス"
+              type="text"
+              handleInput={(e) => handleEmail(e.target.value)}
+              text={formData.email ?? ""}
+              /><br /><br />
+              <TextArea
+              labelText="説明"
+              type="text"
+              handleInput={(e) => handleDesc(e.target.value)}
+              text={formData.description ?? ""}
+              /><br /><br />
+              <Link href={passwordUpdatePage.path}>パスワードの更新</Link>
+              <br /><br />
             </div>
-            </label>
-            <Input
-            labelText="名前"
-            type="text"
-            handleInput={(e) => handleName(e.target.value)}
-            text={formData.name ?? ""}
-            /><br /><br />
-            <Input
-            labelText="メールアドレス"
-            type="text"
-            handleInput={(e) => handleEmail(e.target.value)}
-            text={formData.email ?? ""}
-            /><br /><br />
-            <TextArea
-            labelText="説明"
-            type="text"
-            handleInput={(e) => handleDesc(e.target.value)}
-            text={formData.description ?? ""}
-            /><br /><br />
-            <Link href={passwordUpdatePage.path}>パスワードの更新</Link>
-            <br /><br />
+            <div css={submitAreaCss}> 
+              <Button handleClick={handleClick} disabled={disabled}>更新</Button>
+            </div>
           </div>
-          <div css={submitAreaCss}> 
-            <Button handleClick={handleClick} disabled={disabled}>更新</Button>
+          <input onChange={handleProfileUpdate} type="file" id="profile_image" ref={fileProfileInput} accept="image/*" hidden />
+          <input onChange={handleCoverUpdate} type="file" id="cover_image" ref={fileCoverInput} accept="image/*" 
+                hidden />
           </div>
-         </div>
-         <input onChange={handleProfileUpdate} type="file" id="profile_image" ref={fileProfileInput} accept="image/*" hidden />
-         <input onChange={handleCoverUpdate} type="file" id="cover_image" ref={fileCoverInput} accept="image/*" 
-              hidden />
-        </div>
-     </Layout>
+      </Layout>
     </Auth>
   );
 };

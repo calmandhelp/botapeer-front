@@ -1,5 +1,5 @@
-import { Label } from "model/label"
 import { Post } from "model/post"
+import { Place } from "model/place"
 
 export type PlantRecord = {
   id?: number,
@@ -11,5 +11,5 @@ export type PlantRecord = {
   createdAt?: Date
   updatedAt?: Date
   posts: Post[]
-  label: Label[]
+  place: Place
 }
