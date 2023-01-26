@@ -4,7 +4,7 @@ import Input from "components/Input";
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
+import { accountPage, createPlantRecordPage, rootPage } from "constants/pageConstants";
 import { css } from '@emotion/react';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
@@ -51,7 +51,7 @@ const CreatePlantRecordView = ({}) => {
   ]
 
   const currentPage = {
-    label: plantRecordPage.text
+    label: createPlantRecordPage.text
   }
   const breadCrumb = {
     childPages: childPages,
@@ -114,7 +114,7 @@ const CreatePlantRecordView = ({}) => {
      <Auth>
         <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
           <div css={WrapCss}>
-          <h2>{plantRecordPage.text}</h2>
+          <h2>{createPlantRecordPage.text}</h2>
           <Divider />
           <div css={InnerCss}>
             <div css={InputsCss}>

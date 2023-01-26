@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { createPlantRecordBase, fetchPlantRecordBase, PlantRecordRequest, PlantRecordResponse } from 'util/redux/plantRecordUtils';
+import { createPlantRecordBase, fetchPlantRecordByUserIdBase, PlantRecordRequest, PlantRecordResponse } from 'util/redux/plantRecordUtils';
 
 export type PlantRecordData = {
   data: PlantRecordResponse | PlantRecordResponse[] | null;
@@ -22,10 +22,10 @@ export const createPlantRecord = createAsyncThunk(
   }
 )
 
-export const fetchPlantRecord = createAsyncThunk(
+export const fetchPlantRecordByUserId = createAsyncThunk(
   'plantRecord/fetchPlantRecordStatus',
   async (userId: number) => {
-    const response = await fetchPlantRecordBase(userId)
+    const response = await fetchPlantRecordByUserIdBase(userId)
     return response
   }
 )
@@ -36,14 +36,14 @@ export const plantRecordSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchPlantRecord.pending, (state) => {
+    builder.addCase(fetchPlantRecordByUserId.pending, (state) => {
       state.status = "pending";
     });
-    builder.addCase(fetchPlantRecord.fulfilled, (state, action) => {
+    builder.addCase(fetchPlantRecordByUserId.fulfilled, (state, action) => {
       state.data = action.payload;
       state.status = "succeeded";
     });
-    builder.addCase(fetchPlantRecord.rejected, (state, action) => {
+    builder.addCase(fetchPlantRecordByUserId.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

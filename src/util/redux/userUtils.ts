@@ -16,6 +16,13 @@ export function fetchUserByNameBase(username: string): Promise<UserResponse[]> {
   });
 }
 
+export function fetchUserByPlantRecordIdBase(plantRecordId: number): Promise<UserResponse> {
+  return request({
+      url: API_BASE_URL + "/api/users/plant_records/" + plantRecordId,
+      method: 'GET',
+  });
+}
+
 export type UserResponse = User
 
 export type UserRequest = {
@@ -23,7 +30,6 @@ export type UserRequest = {
   name?: string,
   email?: string,
   status?: boolean,
-  // password?: string,
   coverImage?: string,
   profileImage?: string,
   description?: string,

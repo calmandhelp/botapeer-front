@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { fetchUserByIdBase, fetchUserByNameBase, UserResponse } from 'util/redux/userUtils';
+import { fetchUserByIdBase, fetchUserByNameBase, fetchUserByPlantRecordIdBase, UserResponse } from 'util/redux/userUtils';
 
 export type UserData = {
   data: UserResponse | null;
@@ -15,7 +15,7 @@ const initialState: UserData = {
 };
 
 export const fetchUserById = createAsyncThunk(
-  'auth/fetchUserByIdStatus',
+  'user/fetchUserByIdStatus',
   async (userId: number) => {
     const response = await fetchUserByIdBase(userId);
     return response
@@ -23,9 +23,17 @@ export const fetchUserById = createAsyncThunk(
 )
 
 export const fetchUsersByName = createAsyncThunk(
-  'auth/fetchUserByNameStatus',
+  'user/fetchUserByNameStatus',
   async (name: string) => {
     const response = await fetchUserByNameBase(name);
+    return response
+  }
+)
+
+export const fetchUserByPlantRecordId = createAsyncThunk(
+  'user/fetchUserByPlantRecordId',
+  async (plantRecordId: number) => {
+    const response = await fetchUserByPlantRecordIdBase(plantRecordId);
     return response
   }
 )
@@ -56,6 +64,17 @@ export const userSlice = createSlice({
       state.status = "succeeded";
     });
     builder.addCase(fetchUsersByName.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
+    builder.addCase(fetchUserByPlantRecordId.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchUserByPlantRecordId.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.status = "succeeded";
+    });
+    builder.addCase(fetchUserByPlantRecordId.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
     });

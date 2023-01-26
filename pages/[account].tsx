@@ -11,15 +11,14 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import Divider from "style/Divider";
-import { accountUpdatePage, plantRecordPage, plantCreatePage } from "constants/pageConstants";
+import { accountUpdatePage, createPlantRecordPage, plantRecordPage } from "constants/pageConstants";
 import { appPath } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
 import { User } from "model/user";
 import { API_BASE_URL } from "constants/apiConstants";
-import { fetchPlantRecord, selectPlantRecord } from "redux/slice/plantRecordSlice";
-import { PlantRecordResponse } from "util/redux/plantRecordUtils";
-import { PlantRecord } from "model/plantRcord";
+import { fetchPlantRecordByUserId, selectPlantRecord } from "redux/slice/plantRecordSlice";
 import PersistLogin from "components/PersistLogin";
+import Link from "next/link";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -156,7 +155,7 @@ const AccountView = ({user}: Props) => {
 
   useEffect(() => {
     if(user?.id) {
-      dispatch(fetchPlantRecord(user?.id))
+      dispatch(fetchPlantRecordByUserId(user?.id))
     }
   },[user])
 
@@ -165,23 +164,27 @@ const AccountView = ({user}: Props) => {
       const plantRecordsData = plantRecords?.data;
       if(Array.isArray(plantRecordsData)) {
         return plantRecordsData?.map((plantRecord, index) => {
+          const plantRecordId = plantRecord?.id ? plantRecord?.id.toString() : ""
             if(plantRecord?.posts.length == 0) {
-              console.log(plantRecord?.posts.length);
-              return <li key={index}><Image
+              return <li key={index}>
+                <Link href={plantRecordPage.path + plantRecordId}>
+                <Image
               src={"/images/no_image.png"}
               width={180}
               height={180}
               alt="植物"
-              css={{ objectFit: "cover" }}
-              /></li>
+              css={{ objectFit: "cover", cursor: "pointer" }}
+              /></Link></li>
             } else {
-              return <li key={index}><Image
+              return <li key={index}>
+                <Link href={plantRecordPage.path + plantRecordId}>
+                <Image
               src={plantRecord?.posts[0]?.image_url ?? "/images/no_image.png"}
               width={180}
               height={180}
               alt="植物"
-              css={{ objectFit: "cover" }}
-              /></li>
+              css={{ objectFit: "cover", cursor: "pointer" }}
+              /></Link></li>
             }
         })
       }
@@ -238,7 +241,7 @@ const AccountView = ({user}: Props) => {
           <div css={PlantTitleWrapCss}>
             <h2>持っている植物 🪴</h2>
             <IsLoginUser isLoginUser={auth.userId== user?.id}>
-            <SimpleButton handleClick={() => router.push(plantRecordPage.path)}>{plantRecordPage.text}</SimpleButton>
+            <SimpleButton handleClick={() => router.push(createPlantRecordPage.path)}>{createPlantRecordPage.text}</SimpleButton>
             </IsLoginUser>
           </div>
           <ul css={ListUlCss}>
