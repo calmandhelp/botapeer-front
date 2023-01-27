@@ -110,7 +110,7 @@ const AccountUpdateView = ({}) => {
 
   useEffect(() => {
     if(authUser.status == "succeeded") {
-      const _formData = Object.assign(formData, {
+      const _formData = Object.assign({},formData, {
         name: authUser?.data?.name,
         description: authUser?.data?.description,
         email: authUser?.data?.email
@@ -121,7 +121,7 @@ const AccountUpdateView = ({}) => {
       if(authUser.data?.profileImage) {
         setFileProfile(appPath + authUser.data?.profileImage);
       }
-      setFormData({..._formData});
+      setFormData(_formData);
     }
   },[authUser])
 
@@ -201,18 +201,18 @@ const AccountUpdateView = ({}) => {
   }
 
   const handleName = (name: string) => {
-    const _formData = Object.assign(formData, {name});
-    setFormData({..._formData});
+    const _formData = Object.assign({}, formData, {name});
+    setFormData(_formData);
   }
 
   const handleDesc = (description: string) => {
-    const _formData = Object.assign(formData, {description});
-    setFormData({..._formData});
+    const _formData = Object.assign({}, formData, {description});
+    setFormData(_formData);
   }
 
   const handleEmail = (email: string) => {
-    const _formData = Object.assign(formData, {email});
-    setFormData({..._formData});
+    const _formData = Object.assign({}, formData, {email});
+    setFormData(_formData);
   } 
 
   const handleMessageReset = () => {

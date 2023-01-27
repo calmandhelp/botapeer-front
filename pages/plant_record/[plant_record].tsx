@@ -45,9 +45,10 @@ const PlantRecordView = ({plantRecord}: Props) => {
   const [errors, setErrors] = useState<Error[]>([]);
 
   const childPages = [
+    
     {
     href: rootPage.path + user.data?.name,
-    label: user.data?.name + "さんの" + accountPage.text,
+    label: user.data?.name ? user.data?.name + "さんの" + accountPage.text : "",
     }
   ]
 
