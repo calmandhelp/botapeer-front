@@ -12,6 +12,7 @@ import { GetServerSidePropsContext } from "next";
 import { PlantRecord } from "model/plantRcord";
 import PersistLogin from "components/PersistLogin";
 import { fetchUserByPlantRecordId, selectUser } from "redux/slice/userSlice";
+import Image from "next/image";
 
 const WrapCss = css`
   height: 100%;
@@ -71,10 +72,18 @@ const PlantRecordView = ({plantRecord}: Props) => {
     <PersistLogin>
       <Layout breadCrumbProps={breadCrumb} errors={errors}>
         <div css={WrapCss}>
-        <h2>{plantRecord.title}</h2>
-        <Divider />
+          <div style={{width: "500px", margin: "0 auto"}}>
+            <h2>{plantRecord.title}</h2>
+          </div>
+        <Divider width="500px" margin="0 auto" />
          <div css={InnerCss}>
-
+          <div style={{position: "relative", width: "500px", height: "500px", margin: "0 auto"}}>
+         <Image
+                src="/images/image1.jpg"
+                alt="植物"
+                layout="fill"
+              />
+          </div>
          </div>
         </div>
      </Layout>
