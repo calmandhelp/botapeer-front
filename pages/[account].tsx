@@ -12,7 +12,7 @@ import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import Divider from "style/Divider";
 import { accountUpdatePage, createPlantRecordPage, plantRecordPage } from "constants/pageConstants";
-import { appPath } from "constants/appConstants";
+import { imagePath } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
 import { User } from "model/user";
 import { API_BASE_URL } from "constants/apiConstants";
@@ -200,12 +200,12 @@ const AccountView = ({user}: Props) => {
           <div css={bgCircleCss}>
             <div css={CircleCss}>
             {user?.profileImage ?
-              <Image src={user?.profileImage ? appPath + user?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
+              <Image src={user?.profileImage ? imagePath + user?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
               : null}
             </div>
           </div> 
             {user?.coverImage ?
-            <Image src={appPath + user?.coverImage} objectFit='cover' alt="cover image" layout='fill' />
+            <Image src={imagePath + user?.coverImage} objectFit='cover' alt="cover image" layout='fill' />
             : null}
           </div>
           <div css={ProfileCss}>
