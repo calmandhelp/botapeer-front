@@ -6,7 +6,7 @@ import { UserResponse } from "./userUtils";
 
 export function fetchAuthUserByIdBase(userId: number): Promise<UserResponse> {
   return request({
-      url: API_BASE_URL + "/api/users/" + userId,
+      url: API_BASE_URL + "users/" + userId,
       method: 'GET',
   });
 }
@@ -16,7 +16,7 @@ export function updateAuthUserBase(formData: FormData): Promise<UserResponse> {
   const id = getIdByAccessToken(auth.accessToken);
 
   return multiPartRequest({
-    url: API_BASE_URL + "/api/users/" + id,
+    url: API_BASE_URL + "users/" + id,
     method: 'POST',
     body: formData
   });
@@ -27,7 +27,7 @@ export function updateAuthUserPasswordBase(data: updateAuthUserPasswordRequest):
   const id = getIdByAccessToken(auth.accessToken);
 
   return request({
-    url: API_BASE_URL + "/api/users/" + id + "/password",
+    url: API_BASE_URL + "users/" + id + "/password",
     method: 'POST',
     body: JSON.stringify(data)
   });

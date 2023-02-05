@@ -16,7 +16,6 @@ import { logout, selectAuth } from "redux/slice/authSlice";
 import Link from "next/link";
 import { signIn } from '../redux/slice/authSlice';
 import { rootPage } from "constants/pageConstants";
-import jwtDecode from "jwt-decode";
 import { getIdByAccessToken, Token } from "util/redux/apiBaseUtils";
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
 

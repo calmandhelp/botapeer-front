@@ -7,12 +7,6 @@ import placeReducer from 'redux/slice/placeSlice'
 import logger from 'redux-logger'
 import {combineReducers} from 'redux';
 
-// const persistConfig = {
-//   key: 'root',
-//   storage,
-//   whitelist: ['auth'],
-// };
-
 const rootReducer = combineReducers({ 
   auth: authReducer,
   authUser: authUserReducer,
@@ -24,7 +18,7 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(logger),
-  // devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== 'production',
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

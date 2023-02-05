@@ -11,7 +11,7 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import TextArea from "components/TextArea";
 import { useRef } from "react";
-import { imagePath } from "constants/appConstants";
+import { IMAGE_PATH } from "constants/appConstants";
 import Image from "components/Image";
 import Link from "next/link";
 import { User } from "model/user";
@@ -116,10 +116,10 @@ const AccountUpdateView = ({}) => {
         email: authUser?.data?.email
       });
       if(authUser.data?.coverImage) {
-        setFileCover(imagePath + authUser.data?.coverImage);
+        setFileCover(IMAGE_PATH + authUser.data?.coverImage);
       }
       if(authUser.data?.profileImage) {
-        setFileProfile(imagePath + authUser.data?.profileImage);
+        setFileProfile(IMAGE_PATH + authUser.data?.profileImage);
       }
       setFormData(_formData);
     }
