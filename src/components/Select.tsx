@@ -39,8 +39,8 @@ const Select = (props: InputProps) => {
         value={props.value}
         onChange={props.handleChange}
         >
-        {props.options.map((op) => {
-          return <MenuItem value={op.value}>{op.label}</MenuItem>
+        {props.options.map((op, index) => {
+          return <MenuItem value={op.value} key={index}>{op.label}</MenuItem>
         })}
       </MuiSelect>
     </FormControl>
