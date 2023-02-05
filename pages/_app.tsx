@@ -1,7 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppPropsWithLayout } from "next/app";
-import "../styles/global.css";
-import theme from "../styles/Theme";
+import "css/global.css";
+import theme from "style/Theme";
 import { store } from 'redux/store/store'
 import { Provider } from 'react-redux'
 import { useEffect } from "react";
