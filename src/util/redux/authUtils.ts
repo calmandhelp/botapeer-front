@@ -3,7 +3,7 @@ import { request } from "./apiBaseUtils";
 
 export function login(loginRequest: LoginRequest): Promise<LoginResponse> {
   return request({
-      url: API_BASE_URL + "/api/auth/signin",
+      url: API_BASE_URL + "auth/signin",
       method: 'POST',
       body: JSON.stringify(loginRequest)
   });

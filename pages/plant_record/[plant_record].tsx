@@ -104,7 +104,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { plant_record } = context.query;
-  const res = await fetch(API_BASE_URL + "/api/plant_records/" + plant_record);
+  const res = await fetch(API_BASE_URL + "plant_records/" + plant_record);
   const data = await res.json()
   
   if(!data) {

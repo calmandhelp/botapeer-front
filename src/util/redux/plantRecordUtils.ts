@@ -4,7 +4,7 @@ import { request } from 'util/redux/apiBaseUtils';
 
 export function createPlantRecordBase(data: PlantRecordRequest): Promise<PlantRecordResponse> {
   return request({
-      url: API_BASE_URL + "/api/plant_records",
+      url: API_BASE_URL + "plant_records",
       method: 'POST',
       body: JSON.stringify(data)
   });
@@ -12,7 +12,7 @@ export function createPlantRecordBase(data: PlantRecordRequest): Promise<PlantRe
 
 export function fetchPlantRecordByUserIdBase(userId: number): Promise<PlantRecordResponse[]> {
   return request({
-      url: API_BASE_URL + "/api/plant_records/users/" + userId,
+      url: API_BASE_URL + "plant_records/users/" + userId,
       method: 'GET',
   });
 }

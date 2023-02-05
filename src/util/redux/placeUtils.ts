@@ -4,7 +4,7 @@ import { request } from "./apiBaseUtils";
 
 export function fetchPlaceBase(): Promise<PlaceResponse> {
   return request({
-      url: API_BASE_URL + "/api/places",
+      url: API_BASE_URL + "places",
       method: 'GET',
   });
 }

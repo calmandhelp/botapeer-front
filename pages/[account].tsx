@@ -12,7 +12,7 @@ import { useAppSelector, useAppDispatch } from 'redux/hook';
 import { selectAuth } from "redux/slice/authSlice";
 import Divider from "style/Divider";
 import { accountUpdatePage, createPlantRecordPage, plantRecordPage } from "constants/pageConstants";
-import { imagePath } from "constants/appConstants";
+import { IMAGE_PATH } from "constants/appConstants";
 import IsLoginUser from "components/IsLoginUser";
 import { User } from "model/user";
 import { API_BASE_URL } from "constants/apiConstants";
@@ -200,12 +200,12 @@ const AccountView = ({user}: Props) => {
           <div css={bgCircleCss}>
             <div css={CircleCss}>
             {user?.profileImage ?
-              <Image src={user?.profileImage ? imagePath + user?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
+              <Image src={user?.profileImage ? IMAGE_PATH + user?.profileImage : ""} objectFit='cover' alt="profile image" layout='fill' />
               : null}
             </div>
           </div> 
             {user?.coverImage ?
-            <Image src={imagePath + user?.coverImage} objectFit='cover' alt="cover image" layout='fill' />
+            <Image src={IMAGE_PATH + user?.coverImage} objectFit='cover' alt="cover image" layout='fill' />
             : null}
           </div>
           <div css={ProfileCss}>
@@ -272,7 +272,7 @@ const AccountView = ({user}: Props) => {
 
 export async function getServerSideProps({ query }: any) {
   const username = query.account
-  const res = await fetch(API_BASE_URL + "/api/users?username=" + username);
+  const res = await fetch(API_BASE_URL + "users?username=" + username);
   const data = await res.json()
   
   if(data.length == 0) {
