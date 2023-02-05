@@ -19,6 +19,7 @@ import { selectAuth } from "redux/slice/authSlice";
 import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
 import { Error } from "util/redux/apiBaseUtils";
 import PersistLogin from "components/PersistLogin";
+import { isEmpty } from "util/redux/ObjectUtils";
 
 const WrapCss = css`
   height: 100%;
@@ -106,10 +107,10 @@ const AccountUpdateView = ({}) => {
     } else {
       dispatch(fetchAuthUserById(id));
     }
-  },[dispatch])
+  },[dispatch, auth?.userId])
 
   useEffect(() => {
-    if(authUser.status == "succeeded") {
+    if(authUser.status == "succeeded" && isEmpty(formData)) {
       const _formData = Object.assign({},formData, {
         name: authUser?.data?.name,
         description: authUser?.data?.description,
@@ -123,14 +124,14 @@ const AccountUpdateView = ({}) => {
       }
       setFormData(_formData);
     }
-  },[authUser])
+  },[authUser, formData])
 
   useEffect(() => {
     if(!formData) {
       setDisabled(true);
     } else {
     }
-  },[])
+  },[formData])
 
   const childPages = [
     {

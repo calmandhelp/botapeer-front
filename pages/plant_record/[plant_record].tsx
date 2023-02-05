@@ -65,7 +65,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
     if(plantRecord.id) {
       dispatch(fetchUserByPlantRecordId(plantRecord.id))
     }
-  },[])
+  },[dispatch, plantRecord.id])
 
   const handleCreatePost = () => {
     router.push(createPlantRecordPage.path + "/" + plantRecord.id + "/" + createPlantRecordPostPage.path);

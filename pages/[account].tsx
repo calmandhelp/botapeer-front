@@ -157,7 +157,7 @@ const AccountView = ({user}: Props) => {
     if(user?.id) {
       dispatch(fetchPlantRecordByUserId(user?.id))
     }
-  },[user])
+  },[user, dispatch])
 
   const makePlantRecord = () => {
     if(plantRecords) {

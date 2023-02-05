@@ -81,7 +81,7 @@ const CreatePlantRecordView = ({}) => {
 
   useEffect(() => {
     dispatch(fetchPlaces())
-  },[])
+  },[dispatch])
 
   useEffect(() => {
     if(!title || !placeId) {
@@ -98,7 +98,7 @@ const CreatePlantRecordView = ({}) => {
 
   useEffect(() => {
     dispatch(fetchAuthUserById(auth?.userId))
-  },[])
+  },[dispatch, auth?.userId])
 
   useEffect(() => {
     if(places && Array.isArray(places?.data)) {
