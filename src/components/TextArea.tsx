@@ -15,7 +15,6 @@ const LabelTextCss = css`
 `
 
 type Props = {
-  type: string;
   style?: Interpolation<Theme>;
   name?: string;
   handleInput: (e: any) => void;

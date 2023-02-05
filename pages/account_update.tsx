@@ -258,7 +258,6 @@ const AccountUpdateView = ({}) => {
               /><br /><br />
               <TextArea
               labelText="説明"
-              type="text"
               handleInput={(e) => handleDesc(e.target.value)}
               text={formData.description ?? ""}
               /><br /><br />

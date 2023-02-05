@@ -12,11 +12,16 @@ const FileUploader = (props: Props) => {
 const theme = useTheme();
 
 const inputStyleCss = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: 150px;
   background: ${theme.palette.background.default};
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 5px;
+  color: #b2b2b2;
+  font-weight: bold;
 `
 
 const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -29,7 +34,7 @@ return (
       {
           isDragActive ?
               <p>写真を選択してください。</p> :
-              <p>写真選択かドラッグアンドドロップで追加できます。</p>
+              <p>選択かドラッグアンドドロップで写真を追加できます。</p>
       }
   </div>
 );
