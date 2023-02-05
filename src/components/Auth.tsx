@@ -20,6 +20,13 @@ const Auth = ({ children }: Props) => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
+
+      const CheckRedirect = () => {
+        if (!auth?.isLogin) {
+          router.replace(rootPage.path);
+        }
+      }
+
       const accessToken = localStorage.getItem(ACCESS_TOKEN) ?? "";
       if(accessToken) {
         const decodedJwt: Token = jwtDecode(accessToken);
@@ -36,13 +43,7 @@ const Auth = ({ children }: Props) => {
         dispatch(logout());
         CheckRedirect();
       }
-    }, [router, auth]);
-
-    const CheckRedirect = () => {
-      if (!auth?.isLogin) {
-        router.replace(rootPage.path);
-      }
-    }
+    }, [router, auth, dispatch]);
 
     return (
     <>{auth?.isLogin ? children : <></>}</>

@@ -111,7 +111,7 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
 
   useEffect(() => {
     dispatch(fetchAuthUserById(auth?.userId))
-  },[])
+  },[auth?.userId, dispatch])
 
   useEffect(() => {
     if(places && Array.isArray(places?.data)) {

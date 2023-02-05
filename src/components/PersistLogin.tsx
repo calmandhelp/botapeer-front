@@ -34,7 +34,7 @@ const PersistLogin = ({ children }: Props) => {
     } else {
       dispatch(logout());
     }
-  }, [router, auth]);
+  }, [router, auth, dispatch]);
 
     return (
     <>{children}</>
