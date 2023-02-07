@@ -4,14 +4,6 @@ import "css/global.css";
 import theme from "style/Theme";
 import { store } from 'redux/store/store'
 import { Provider } from 'react-redux'
-import { useEffect } from "react";
-import { ACCESS_TOKEN } from "constants/apiConstants";
-import jwtDecode from "jwt-decode";
-import { Token } from "util/redux/apiBaseUtils";
-import { logout, persitLogin, selectAuth } from "redux/slice/authSlice";
-import { useAppDispatch, useAppSelector } from "redux/hook";
-import { useRouter } from "next/router";
-import { rootPage } from "constants/pageConstants";
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 

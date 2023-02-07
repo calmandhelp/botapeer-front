@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "redux/hook";
 import { logout, selectAuth } from "redux/slice/authSlice";
 import Link from "next/link";
 import { signIn } from '../redux/slice/authSlice';
-import { rootPage } from "constants/pageConstants";
+import { accountCreatePage, rootPage } from "constants/pageConstants";
 import { getIdByAccessToken, Token } from "util/redux/apiBaseUtils";
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
 
@@ -46,7 +46,9 @@ const Header = ({}) => {
     setAnchorEl(null);
   };
 
-  const handleRegister = () => {};
+  const handleRegister = () => {
+    router.push(accountCreatePage.path);
+  };
 
   const handleModalClose = () => {
     setAnchorEl(null);
@@ -80,10 +82,6 @@ const Header = ({}) => {
         }
     })
   };
-
-  // useEffect(() => {
-  //   dispatch(fetchAuthUserById(auth.userId))
-  // },[auth])
 
   return (
     <header css={HeaderCss}>
