@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { login, LoginRequest, AuthInfo } from 'util/redux/authUtils';
+import { signInBase, LoginRequest, AuthInfo, SignUpRequest, signUpBase } from 'util/redux/authUtils';
 import { getIdByAccessToken } from 'util/redux/apiBaseUtils';
 import { ACCESS_TOKEN } from 'constants/apiConstants';
 
@@ -20,7 +20,15 @@ const initialState: AuthData = {
 export const signIn = createAsyncThunk(
   'auth/signInStatus',
   async (data: LoginRequest) => {
-    const response = await login(data);
+    const response = await signInBase(data);
+    return response
+  }
+)
+
+export const signUp = createAsyncThunk(
+  'auth/signUpStatus',
+  async (data: SignUpRequest) => {
+    const response = await signUpBase(data);
     return response
   }
 )

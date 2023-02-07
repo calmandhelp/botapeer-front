@@ -52,7 +52,6 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
   const [message, setMessage] = useState('');
 
   useEffect(()=>{
-    console.log("expired: " + expired);
     if(login) {
       setMessage("ログインしました");
       setOpen(true);
