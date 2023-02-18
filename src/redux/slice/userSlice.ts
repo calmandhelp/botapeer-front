@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { fetchUserByIdBase, fetchUserByNameBase, fetchUserByPlantRecordIdBase, UserResponse } from 'util/redux/userUtils';
+import { User, UserApi } from 'botapeer-openapi/typescript-axios';
+
+const userApi = new UserApi();
 
 export type UserData = {
-  data: UserResponse | null;
+  data: User | null;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: undefined | string;
 };
@@ -17,7 +19,8 @@ const initialState: UserData = {
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserByIdStatus',
   async (userId: number) => {
-    const response = await fetchUserByIdBase(userId);
+    // const response = await fetchUserByIdBase(userId);
+    const response  = await userApi.findUserById(userId.toString());
     return response
   }
 )
@@ -25,7 +28,8 @@ export const fetchUserById = createAsyncThunk(
 export const fetchUsersByName = createAsyncThunk(
   'user/fetchUserByNameStatus',
   async (name: string) => {
-    const response = await fetchUserByNameBase(name);
+    // const response = await fetchUserByNameBase(name);
+    const response  = await userApi.getUsersOrGetUserByName(name);
     return response
   }
 )
@@ -33,7 +37,8 @@ export const fetchUsersByName = createAsyncThunk(
 export const fetchUserByPlantRecordId = createAsyncThunk(
   'user/fetchUserByPlantRecordId',
   async (plantRecordId: number) => {
-    const response = await fetchUserByPlantRecordIdBase(plantRecordId);
+    // const response = await fetchUserByPlantRecordIdBase(plantRecordId);
+    const response  = await userApi.findUserByPlantRecordId(plantRecordId.toString());
     return response
   }
 )
@@ -48,7 +53,7 @@ export const userSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(fetchUserById.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(fetchUserById.rejected, (state, action) => {
@@ -59,7 +64,7 @@ export const userSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(fetchUsersByName.fulfilled, (state, action) => {
-      const users = action.payload;
+      const users = action.payload.data;
       state.data = users[0];
       state.status = "succeeded";
     });
@@ -71,7 +76,7 @@ export const userSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(fetchUserByPlantRecordId.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(fetchUserByPlantRecordId.rejected, (state, action) => {
