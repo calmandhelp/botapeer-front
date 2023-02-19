@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from '../store/store'
+import type { RootState } from 'redux/store/store'
 import { fetchPlaceBase, PlaceResponse } from 'util/redux/placeUtils';
 
 export type PlaceData = {

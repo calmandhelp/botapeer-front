@@ -1,12 +1,17 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { AuthInfo, SignUpRequest, signUpBase } from 'util/redux/authUtils';
 import { getIdByAccessToken } from 'util/redux/apiBaseUtils';
 import { ACCESS_TOKEN } from 'constants/apiConstants';
-import { SignInRequest } from 'botapeer-openapi/typescript-axios';
+import { CreateUserRequest, SignInRequest } from 'botapeer-openapi/typescript-axios';
 import { AuthApi } from 'botapeer-openapi/typescript-axios/api/auth-api';
 
 const authApi = new AuthApi();
+
+type AuthInfo = {
+ isLogin: boolean,
+ userId: number,
+ accessToken: string,
+};
 
 export type AuthData = {
   status: "idle" | "pending" | "succeeded" | "failed",
@@ -31,8 +36,8 @@ export const signIn = createAsyncThunk(
 
 export const signUp = createAsyncThunk(
   'auth/signUpStatus',
-  async (data: SignUpRequest) => {
-    const response = await signUpBase(data);
+  async (data: CreateUserRequest) => {
+    const response = await authApi.createUser(data);
     return response
   }
 )

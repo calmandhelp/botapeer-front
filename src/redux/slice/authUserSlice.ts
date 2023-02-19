@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RootState, store } from 'redux/store/store'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { RootState } from 'redux/store/store'
 import { UserResponse, UserApi } from 'botapeer-openapi/typescript-axios';
-import { setupAxiosConfig } from 'util/redux/apiBaseUtils';
 
 export type AuthData = {
   data: UserResponse | null

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from '../store/store'
+import type { RootState } from 'redux/store/store'
 import { UserResponse, UserApi } from 'botapeer-openapi/typescript-axios';
 
 const userApi = new UserApi();
@@ -19,7 +19,6 @@ const initialState: UserData = {
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserByIdStatus',
   async (userId: number) => {
-    // const response = await fetchUserByIdBase(userId);
     const response  = await userApi.findUserById(userId.toString());
     return response
   }
@@ -28,7 +27,6 @@ export const fetchUserById = createAsyncThunk(
 export const fetchUsersByName = createAsyncThunk(
   'user/fetchUserByNameStatus',
   async (name: string) => {
-    // const response = await fetchUserByNameBase(name);
     const response  = await userApi.getUsersOrGetUserByName(name);
     return response
   }
