@@ -17,9 +17,10 @@ import Link from "next/link";
 import { User } from "model/user";
 import { selectAuth } from "redux/slice/authSlice";
 import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
-import { Error } from "util/redux/apiBaseUtils";
+import { Error, setupAxiosConfig } from "util/redux/apiBaseUtils";
 import PersistLogin from "components/PersistLogin";
 import { isEmpty } from "util/redux/ObjectUtils";
+import { UpdateUserFormData } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -93,7 +94,7 @@ const AccountUpdateView = ({}) => {
   const authUser = useAppSelector(selectAuthUser);
   const [fileCover, setFileCover] = useState<string | undefined>();
   const [fileProfile, setFileProfile] = useState<string | undefined>('');
-  const [formData, setFormData] = useState<User>({})
+  const [formData, setFormData] = useState<UpdateUserFormData>()
   const [message, setMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
   const fileProfileInput = useRef<HTMLInputElement>(null);
@@ -110,7 +111,7 @@ const AccountUpdateView = ({}) => {
   },[dispatch, auth?.userId])
 
   useEffect(() => {
-    if(authUser.status == "succeeded" && isEmpty(formData)) {
+    if(authUser.status == "succeeded" && !formData) {
       const _formData = Object.assign({},formData, {
         name: authUser?.data?.name,
         description: authUser?.data?.description,
@@ -125,13 +126,6 @@ const AccountUpdateView = ({}) => {
       setFormData(_formData);
     }
   },[authUser, formData])
-
-  useEffect(() => {
-    if(!formData) {
-      setDisabled(true);
-    } else {
-    }
-  },[formData])
 
   const childPages = [
     {
@@ -150,22 +144,19 @@ const AccountUpdateView = ({}) => {
   }
 
   const handleClick = async() => {
-
-    const submitData = new FormData();
-
-    submitData.append("formData", new Blob([JSON.stringify(formData)],{type : 'application/json'}));
-
+    let profileFile = undefined;
+    let coverFile = undefined;
     if(fileProfileInput?.current?.files) {
-      const _file = fileProfileInput.current.files[0];
-      submitData.append("profileImage", _file)
+      profileFile = fileProfileInput.current.files[0];
     }
 
     if(fileCoverInput?.current?.files) {
-      const _file = fileCoverInput.current.files[0];
-      submitData.append("coverImage", _file)
+      coverFile = fileCoverInput.current.files[0];
     }
 
-    const updateAuthUserResultAction = await dispatch(updateAuthUser(submitData))
+    const authUserId = authUser.data?.id?.toString() ?? "";
+
+    const updateAuthUserResultAction = await dispatch(updateAuthUser([authUserId, formData, profileFile, coverFile, setupAxiosConfig()]))
     if(updateAuthUser.fulfilled.match(updateAuthUserResultAction)) {
       if(authUser.data?.id) {
         const FetchAuthUserByIdResultAction = await dispatch(fetchAuthUserById(authUser.data?.id))
@@ -249,18 +240,18 @@ const AccountUpdateView = ({}) => {
               labelText="名前"
               type="text"
               handleInput={(e) => handleName(e.target.value)}
-              text={formData.name ?? ""}
+              text={formData?.name ?? ""}
               /><br /><br />
               <Input
               labelText="メールアドレス"
               type="text"
               handleInput={(e) => handleEmail(e.target.value)}
-              text={formData.email ?? ""}
+              text={formData?.email ?? ""}
               /><br /><br />
               <TextArea
               labelText="説明"
               handleInput={(e) => handleDesc(e.target.value)}
-              text={formData.description ?? ""}
+              text={formData?.description ?? ""}
               /><br /><br />
               <Link href={passwordUpdatePage.path}>パスワードの更新</Link>
               <br /><br />
