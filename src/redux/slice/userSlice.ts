@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { User, UserApi } from 'botapeer-openapi/typescript-axios';
+import { UserResponse, UserApi } from 'botapeer-openapi/typescript-axios';
 
 const userApi = new UserApi();
 
 export type UserData = {
-  data: User | null;
+  data: UserResponse | null;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: undefined | string;
 };
