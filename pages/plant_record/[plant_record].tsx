@@ -7,12 +7,13 @@ import { css } from '@emotion/react';
 import { Error } from "util/redux/apiBaseUtils";
 import { API_BASE_URL } from "constants/apiConstants";
 import { GetServerSidePropsContext } from "next";
-import { PlantRecord } from "model/plantRcord";
 import PersistLogin from "components/PersistLogin";
 import { fetchUserByPlantRecordId, selectUser } from "redux/slice/userSlice";
 import Image from "next/image";
 import SimpleButton from "components/SimpleButton";
 import { useRouter } from "next/router";
+import { PlantRecordResponse } from "botapeer-openapi/typescript-axios";
+import { toDateTime } from "util/date/dateUtils";
 
 const WrapCss = css`
   height: 100%;
@@ -36,7 +37,7 @@ const picInfoCss = css`
 `
 
 type Props = {
-  plantRecord: PlantRecord
+  plantRecord: PlantRecordResponse
 }  
 
 const PlantRecordView = ({plantRecord}: Props) => {
@@ -82,7 +83,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
          <Divider />
          <div css={InnerCss}>
          <div css={picInfoCss}>
-          <div>{plantRecord.createdAt?.toString()}-</div>
+          <div>{toDateTime(plantRecord.createdAt ?? "")}-</div>
           <SimpleButton handleClick={handleCreatePost}>投稿追加</SimpleButton>
          </div>
           <div style={{position: "relative", width: "500px", height: "500px", margin: "0 auto"}}>

@@ -7,7 +7,7 @@ import { accountCreatePage, accountPage, passwordUpdatePage, rootPage } from "co
 import { css } from '@emotion/react';
 import Button from "components/Button";
 import { Error } from "util/redux/apiBaseUtils";
-import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlice";
+import { selectAuthUser } from "redux/slice/authUserSlice";
 import PersistLogin from "components/PersistLogin";
 import { signUp } from "redux/slice/authSlice";
 

@@ -9,7 +9,7 @@ import { accountUpdatePage } from 'constants/pageConstants';
 import { css } from '@emotion/react';
 import Button from "components/Button";
 import { Error } from "util/redux/apiBaseUtils";
-import { selectAuthUser, updateAuthUserPassword } from "redux/slice/authUserSlice";
+import { selectAuthUser } from "redux/slice/authUserSlice";
 import PersistLogin from "components/PersistLogin";
 
 const WrapCss = css`
@@ -64,12 +64,12 @@ const PasswordUpdateView = ({}) => {
   }
 
   const handleClick = () => {
-      dispatch(updateAuthUserPassword({currentPassword, newPassword}))
-      .unwrap()
-      .catch(error => {
-          const errors = JSON.parse(error.message).errors;
-          setErrors(errors);
-      })
+      // dispatch(updateAuthUserPassword({currentPassword, newPassword}))
+      // .unwrap()
+      // .catch(error => {
+      //     const errors = JSON.parse(error.message).errors;
+      //     setErrors(errors);
+      // })
   }
 
   useEffect(() => {

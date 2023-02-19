@@ -18,9 +18,9 @@ import PersistLogin from "components/PersistLogin";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 import { API_BASE_URL } from "constants/apiConstants";
-import { PlantRecord } from "model/plantRcord";
 import TextArea from "components/TextArea";
 import FileUploader from "components/FileUploader";
+import { PlantRecordResponse } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -39,7 +39,7 @@ const InputsCss = css`
 `
 
 type Props = {
-  plantRecord: PlantRecord
+  plantRecord: PlantRecordResponse
 }  
 
 const CreatePlantRecordPostView = ({plantRecord}: Props) => {

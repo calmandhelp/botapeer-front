@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from '../store/store'
-import { createPlantRecordBase, fetchPlantRecordByUserIdBase, PlantRecordRequest, PlantRecordResponse } from 'util/redux/plantRecordUtils';
+import { CreatePlantRecordRequest, PlantRecordResponse, PlantRecordApi } from 'botapeer-openapi/typescript-axios';
+import { RootState } from 'redux/store/store'
+
+const plantRecordApi = new PlantRecordApi();
 
 export type PlantRecordData = {
   data: PlantRecordResponse | PlantRecordResponse[] | null;
@@ -16,8 +18,8 @@ const initialState: PlantRecordData = {
 
 export const createPlantRecord = createAsyncThunk(
   'plantRecord/createPlantRecordStatus',
-  async (data: PlantRecordRequest) => {
-    const response = await createPlantRecordBase(data);
+  async (data: CreatePlantRecordRequest) => {
+    const response = await plantRecordApi.createPlantRecord(data);
     return response
   }
 )
@@ -25,7 +27,7 @@ export const createPlantRecord = createAsyncThunk(
 export const fetchPlantRecordByUserId = createAsyncThunk(
   'plantRecord/fetchPlantRecordStatus',
   async (userId: number) => {
-    const response = await fetchPlantRecordByUserIdBase(userId)
+    const response = await plantRecordApi.getPlantRecordByUserId(userId.toString())
     return response
   }
 )
@@ -40,7 +42,7 @@ export const plantRecordSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(fetchPlantRecordByUserId.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(fetchPlantRecordByUserId.rejected, (state, action) => {
@@ -51,7 +53,7 @@ export const plantRecordSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(createPlantRecord.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(createPlantRecord.rejected, (state, action) => {
