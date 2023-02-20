@@ -17,9 +17,9 @@ import Link from "next/link";
 import { User } from "model/user";
 import { selectAuth } from "redux/slice/authSlice";
 import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/authUserSlice";
-import { Error, setupAxiosConfig } from "util/redux/apiBaseUtils";
+import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
 import PersistLogin from "components/PersistLogin";
-import { isEmpty } from "util/redux/ObjectUtils";
+import { isEmpty } from "util/object/ObjectUtils";
 import { UpdateUserFormData } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
@@ -156,7 +156,7 @@ const AccountUpdateView = ({}) => {
 
     const authUserId = authUser.data?.id?.toString() ?? "";
 
-    const updateAuthUserResultAction = await dispatch(updateAuthUser([authUserId, formData, profileFile, coverFile, setupAxiosConfig()]))
+    const updateAuthUserResultAction = await dispatch(updateAuthUser([authUserId, formData, profileFile, coverFile, setupAuthConfig()]))
     if(updateAuthUser.fulfilled.match(updateAuthUserResultAction)) {
       if(authUser.data?.id) {
         const FetchAuthUserByIdResultAction = await dispatch(fetchAuthUserById(authUser.data?.id))

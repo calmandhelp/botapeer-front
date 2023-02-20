@@ -69,7 +69,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
   },[dispatch, plantRecord.id])
 
   const handleCreatePost = () => {
-    router.push(createPlantRecordPage.path + "/" + plantRecord.id + "/" + createPlantRecordPostPage.path);
+    router.push(createPlantRecordPage.path + "/" + plantRecord.id + createPlantRecordPostPage.path);
   }
 
   return (

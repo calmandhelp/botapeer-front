@@ -63,7 +63,7 @@ export type Error = {
   message: string
 }
 
-export const setupAxiosConfig = () => {
+export const setupAuthConfig = () => {
     const auth = store.getState().auth;
 
     const token = 'Bearer ' + auth.accessToken;

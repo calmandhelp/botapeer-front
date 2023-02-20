@@ -35,7 +35,6 @@ export const fetchUsersByName = createAsyncThunk(
 export const fetchUserByPlantRecordId = createAsyncThunk(
   'user/fetchUserByPlantRecordId',
   async (plantRecordId: number) => {
-    // const response = await fetchUserByPlantRecordIdBase(plantRecordId);
     const response  = await userApi.findUserByPlantRecordId(plantRecordId.toString());
     return response
   }

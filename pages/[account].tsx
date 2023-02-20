@@ -180,7 +180,7 @@ const AccountView = ({user}: Props) => {
               return <li key={index}>
                 <Link href={plantRecordPage.path + plantRecordId}>
                 <Image
-              src={plantRecord?.posts[index]?.image_url ?? "/images/no_image.png"}
+              src={plantRecord?.posts[index]?.imageUrl ?? "/images/no_image.png"}
               width={180}
               height={180}
               alt="植物"

@@ -9,12 +9,11 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
-import { createPlantRecord } from "redux/slice/plantRecordSlice";
+import { createPlantRecord, createPost } from "redux/slice/plantRecordSlice";
 import { Error } from "util/redux/apiBaseUtils";
 import { selectAuth } from "redux/slice/authSlice";
-import Select, { Option } from "components/Select";
-import { fetchPlaces, selectPlace } from "redux/slice/placeSlice";
-import PersistLogin from "components/PersistLogin";
+import { Option } from "components/Select";
+import { selectPlace } from "redux/slice/placeSlice";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 import { API_BASE_URL } from "constants/apiConstants";
@@ -46,11 +45,10 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
   const auth = useAppSelector(selectAuth);
-  const places = useAppSelector(selectPlace);
   const [title, setTitle] = useState("");
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [message, setMessage] = useState('');
-  const [placeId, setPlaceId] = useState(0);
+  const [article, setArticle] = useState("");
   const [errors, setErrors] = useState<Error[]>([]);
   const [options, setOptions] = useState<Option[]>([]);
   const router = useRouter();
@@ -76,33 +74,32 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   }
 
   const handleCreate = async () => {
-    if(!title || !placeId) {
+    if(!title || !article) {
       return
     }
-    const data = {
-      title,
-      placeId
-    }
-    const createPlantRecordAction = await dispatch(createPlantRecord(data))
-    if(createPlantRecord.fulfilled.match(createPlantRecordAction)) {
+    const image = new File(["foo"], "foo.jpg");
+    const formData = {title, article};
+    
+    const createPostAction = await dispatch(createPost({formData, image}))
+    if(createPost.fulfilled.match(createPostAction)) {
       setMessage("作成しました");
       setTitle("")
-      setPlaceId(0)
+      setArticle("")
     } else {
-      if(createPlantRecordAction.payload) {
+      if(createPostAction.payload) {
       } else {
-        setErrors(JSON.parse(createPlantRecordAction.error.message as any).errors);
+        setErrors(JSON.parse(createPostAction.error.message as any).errors);
       }
     }
   }
 
   useEffect(() => {
-    if(!title || !placeId) {
+    if(!title || !article) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
     }
-  },[title, placeId])
+  },[title, article])
 
   const handleMessageReset = () => {
     setMessage('');
@@ -110,18 +107,10 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   }
 
   useEffect(() => {
-    dispatch(fetchAuthUserById(auth?.userId))
-  },[auth?.userId, dispatch])
-
-  useEffect(() => {
-    if(places && Array.isArray(places?.data)) {
-      const op: Option[] = []
-      places?.data.map((place) => {
-        op.push({value: place.id,label: place.name})
-      })
-      setOptions(op);
+    if(auth?.userId) {
+      dispatch(fetchAuthUserById(auth?.userId))
     }
-  },[places])
+  },[auth?.userId, dispatch])
 
   return (
      <Auth>
@@ -140,8 +129,8 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
               /><br /><br />
               <TextArea
               labelText="投稿内容"
-              handleInput={(e) => setPlaceId(e.target.value)}
-              text={title}
+              handleInput={(e) => setArticle(e.target.value)}
+              text={article}
               /><br /><br />
             <ul>
             </ul>
