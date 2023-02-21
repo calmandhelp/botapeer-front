@@ -6,3 +6,6 @@ export const passwordUpdatePage = {text: "パスワード情報更新", path: "/
 export const createPlantRecordPage = {text: "生育記録作成", path: "/plant_record"}
 export const createPlantRecordPostPage = {text: "生育記録投稿", path: "/post"}
 export const plantRecordPage = {text: "生育記録", path: "/plant_record/"}
+export const makePlantRecordPostPage = (plantRecordId: string, postId: string) => {
+  return {text: "投稿", path: "/plant_record/" + plantRecordId + "/post/" + postId}
+}

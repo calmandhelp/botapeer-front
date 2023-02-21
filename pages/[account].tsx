@@ -177,10 +177,11 @@ const AccountView = ({user}: Props) => {
               css={{ objectFit: "cover", cursor: "pointer" }}
               /></Link></li>
             } else {
+              const latestPost = plantRecord?.posts.reduce((prev, current) => ((prev?.id ?? 0) > (current?.id ?? 0) ? prev : current));
               return <li key={index}>
                 <Link href={plantRecordPage.path + plantRecordId}>
                 <Image
-              src={plantRecord?.posts[index]?.imageUrl ?? "/images/no_image.png"}
+              src={IMAGE_PATH + latestPost.imageUrl ?? "/images/no_image.png"}
               width={180}
               height={180}
               alt="植物"

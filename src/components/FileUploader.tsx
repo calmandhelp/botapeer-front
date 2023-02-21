@@ -1,10 +1,11 @@
 import { css, SerializedStyles } from '@emotion/react';
 import { useTheme } from '@mui/material/styles';
-import { useCallback } from 'react';
-import {useDropzone} from 'react-dropzone';
+import { createRef, useCallback } from 'react';
+import Dropzone, {DropzoneRef, useDropzone} from 'react-dropzone';
 
 type Props = {
   css?: SerializedStyles
+  setFiles: (file: File[]) => void
 }
 
 const FileUploader = (props: Props) => {
@@ -25,19 +26,21 @@ const inputStyleCss = css`
 `
 
 const onDrop = useCallback((acceptedFiles: File[]) => {
-
-}, []);
-const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-return (
-  <div {...getRootProps()} css={[inputStyleCss, props?.css]}>
+  props.setFiles(acceptedFiles);
+}, [props.setFiles]);
+  return (
+    <Dropzone onDrop={onDrop}>
+      {({getRootProps, getInputProps, isDragActive}) => (
+      <div {...getRootProps()} css={[inputStyleCss, props?.css]}>
       <input {...getInputProps()} />
-      {
-          isDragActive ?
-              <p>写真を選択してください。</p> :
-              <p>選択かドラッグアンドドロップで写真を追加できます。</p>
-      }
-  </div>
-);
+        {
+            isDragActive ?
+                <p>アップロードします</p> :
+                <p>選択かドラッグアンドドロップで写真を追加できます。</p>
+        }
+      </div>
+    )}
+    </Dropzone>
+  );
 }
-
 export default FileUploader;

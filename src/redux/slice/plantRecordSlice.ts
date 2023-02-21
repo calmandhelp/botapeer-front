@@ -18,6 +18,14 @@ const initialState: PlantRecordData = {
   error: undefined,
 };
 
+export const fetchPlantRecordById = createAsyncThunk(
+  'plantRecord/fetchPlantRecordByIdStatus',
+  async (plantRecordId: string) => {
+    const response = await plantRecordApi.getPlantRecordById(plantRecordId);
+    return response
+  }
+)
+
 export const createPlantRecord = createAsyncThunk(
   'plantRecord/createPlantRecordStatus',
   async (data: CreatePlantRecordRequest) => {
@@ -27,7 +35,7 @@ export const createPlantRecord = createAsyncThunk(
 )
 
 export const fetchPlantRecordByUserId = createAsyncThunk(
-  'plantRecord/fetchPlantRecordStatus',
+  'plantRecord/fetchPlantRecordByUserIdStatus',
   async (userId: number) => {
     const response = await plantRecordApi.getPlantRecordByUserId(userId.toString())
     return response
@@ -36,15 +44,8 @@ export const fetchPlantRecordByUserId = createAsyncThunk(
 
 export const createPost = createAsyncThunk(
   'plantRecord/createPost',
-  async (data: CreatePostRequest) => {
-    const formData = new FormData();
-    formData.append('formData', JSON.stringify(data.formData));
-    formData.append('image', data.image);
-    const response = await axios.post('http://localhost:3000/api/120/post', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  async (data: Parameters<typeof plantRecordApi.createPost>) => {
+    const response = await plantRecordApi.createPost(...data);
     return response
   }
 )
@@ -55,6 +56,17 @@ export const plantRecordSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchPlantRecordById.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchPlantRecordById.fulfilled, (state, action) => {
+      state.data = action.payload.data;
+      state.status = "succeeded";
+    });
+    builder.addCase(fetchPlantRecordById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.error.message;
+    });
     builder.addCase(fetchPlantRecordByUserId.pending, (state) => {
       state.status = "pending";
     });
@@ -81,9 +93,6 @@ export const plantRecordSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(createPost.fulfilled, (state, action) => {
-      console.log(state.data);
-      const data = Object.assign({}, state.data, {posts: action.payload.data});
-      state.data = data
       state.status = "succeeded";
     });
     builder.addCase(createPost.rejected, (state, action) => {
