@@ -5,9 +5,11 @@ import Divider from "style/Divider";
 import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
 import { css } from '@emotion/react';
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
-import { deletePost, fetchPlantRecordById, selectPlantRecord } from "redux/slice/plantRecordSlice";
-import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
+import { fetchPlantRecordById, selectPlantRecord } from "redux/slice/plantRecordSlice";
+import { deletePost } from "redux/slice/postSlice";
+import { setupAuthConfig } from "util/redux/apiBaseUtils";
 import DeleteIcon from '@mui/icons-material/Delete';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { selectAuth } from "redux/slice/authSlice";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
@@ -147,8 +149,10 @@ const PlantRecordPostView = ({ post }: Props) => {
               alt="植物"
               />
             <div style={{display: "flex", justifyContent: "flex-end"}}>
+              <FavoriteIcon css={{color: '#707070', cursor: "pointer"}} />0　
               <DeleteIcon css={{color: '#707070', cursor: "pointer"}} onClick={handleDelete} />
             </div>
+            {post.article}
           </div>
           </div>
          </div>
@@ -160,9 +164,8 @@ const PlantRecordPostView = ({ post }: Props) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { post, plant_record } = context.query;
-  const res = await fetch(API_BASE_URL + "plant_records/" + plant_record + "/posts/" + post);
+  const res = await fetch(API_BASE_URL + "posts/" + post + "/plant_records/" + plant_record);
   const data = await res.json()
-  console.log(data);
   if(!data || !data.id) {
     return {
       notFound: true

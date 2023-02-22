@@ -54,30 +54,6 @@ export const fetchPlantRecordByUserId = createAsyncThunk(
   }
 )
 
-export const createPost = createAsyncThunk(
-  'plantRecord/createPost',
-  async (data: Parameters<typeof plantRecordApi.createPost>, thunkAPI) => {
-  try {
-    const response = await plantRecordApi.createPost(...data);
-    return response
-  } catch(error: any) {
-    return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-)
-
-export const deletePost = createAsyncThunk(
-  'plantRecord/deletePost',
-  async (data: Parameters<typeof plantRecordApi.deletePost>, thunkAPI) => {
-  try {    
-    const response = await plantRecordApi.deletePost(...data);
-    return response
-  } catch(error: any) {
-    return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-)
-
 export const plantRecordSlice = createSlice({
   name: 'plantRecord',
   initialState,
@@ -116,28 +92,6 @@ export const plantRecordSlice = createSlice({
       state.status = "succeeded";
     });
     builder.addCase(createPlantRecord.rejected, (state, action) => {
-      state.status = "failed";
-      const errors = action.payload as ErrorResponse;
-      state.error = errors;
-    });
-    builder.addCase(createPost.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(createPost.fulfilled, (state, action) => {
-      state.status = "succeeded";
-    });
-    builder.addCase(createPost.rejected, (state, action) => {
-      state.status = "failed";
-      const errors = action.payload as ErrorResponse;
-      state.error = errors;
-    });
-    builder.addCase(deletePost.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(deletePost.fulfilled, (state, action) => {
-      state.status = "succeeded";
-    });
-    builder.addCase(deletePost.rejected, (state, action) => {
       state.status = "failed";
       const errors = action.payload as ErrorResponse;
       state.error = errors;

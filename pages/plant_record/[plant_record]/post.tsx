@@ -9,7 +9,7 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
-import { createPlantRecord, createPost } from "redux/slice/plantRecordSlice";
+import { createPost } from "redux/slice/postSlice";
 import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
 import { selectAuth } from "redux/slice/authSlice";
 import { Option } from "components/Select";
