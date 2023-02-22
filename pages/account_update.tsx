@@ -20,7 +20,7 @@ import { fetchAuthUserById, selectAuthUser, updateAuthUser } from "redux/slice/a
 import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
 import PersistLogin from "components/PersistLogin";
 import { isEmpty } from "util/object/ObjectUtils";
-import { UpdateUserFormData } from "botapeer-openapi/typescript-axios";
+import { ErrorResponse, UpdateUserFormData } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -99,7 +99,7 @@ const AccountUpdateView = ({}) => {
   const [disabled, setDisabled] = useState(false);
   const fileProfileInput = useRef<HTMLInputElement>(null);
   const fileCoverInput = useRef<HTMLInputElement>(null);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
 
   useEffect(() => {
     const id = auth?.userId;
@@ -165,10 +165,7 @@ const AccountUpdateView = ({}) => {
         }
       }
     } else {
-      if(updateAuthUserResultAction.payload) {
-      } else {
-        setErrors(JSON.parse(updateAuthUserResultAction.error.message as any).errors);
-      }
+        setErrors(updateAuthUserResultAction.payload as ErrorResponse);
     }
   }
 
@@ -209,12 +206,12 @@ const AccountUpdateView = ({}) => {
 
   const handleMessageReset = () => {
     setMessage('');
-    setErrors([]);
+    setErrors(undefined);
   }
 
   return (
       <Auth>
-        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
+        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errorResponse={errors}>
           <div css={WrapCss}>
           <h2>{accountUpdatePage.text}</h2>
           <Divider />

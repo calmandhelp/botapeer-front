@@ -19,7 +19,7 @@ import { GetServerSidePropsContext } from "next";
 import { API_BASE_URL } from "constants/apiConstants";
 import TextArea from "components/TextArea";
 import FileUploader from "components/FileUploader";
-import { PlantRecordResponse } from "botapeer-openapi/typescript-axios";
+import { ErrorResponse, PlantRecordResponse } from "botapeer-openapi/typescript-axios";
 import { DropzoneRef } from "react-dropzone";
 import Image from "components/Image";
 
@@ -51,7 +51,7 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [message, setMessage] = useState('');
   const [article, setArticle] = useState("");
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
   const [files, setFiles] = useState<File[]>();
   const router = useRouter();
   const [fileUrl, setFileUrl] = useState<string | undefined>('');
@@ -92,10 +92,7 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
         setArticle("")
         setFiles(undefined)
       } else {
-      if(createPostAction.payload) {
-      } else {
-        setErrors(JSON.parse(createPostAction.error.message as any).errors);
-        }
+        setErrors(createPostAction.payload as ErrorResponse);
       }
     }
   }
@@ -110,7 +107,7 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
 
   const handleMessageReset = () => {
     setMessage('');
-    setErrors([]);
+    setErrors(undefined);
   }
 
   useEffect(() => {
@@ -129,10 +126,10 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
         setFileUrl("");
       }
   },[files])
-
+ 
   return (
      <Auth>
-        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
+        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errorResponse={errors}>
           <div css={WrapCss}>
           <h2>{createPlantRecordPostPage.text}</h2>
           <Divider />

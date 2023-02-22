@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from 'redux/store/store'
-import { UserResponse, UserApi } from 'botapeer-openapi/typescript-axios';
+import { UserResponse, UserApi, ErrorResponse } from 'botapeer-openapi/typescript-axios';
 
 const userApi = new UserApi();
 
 export type UserData = {
   data: UserResponse | null;
   status: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
+  error: ErrorResponse | undefined;
 };
 
 const initialState: UserData = {
@@ -18,25 +18,37 @@ const initialState: UserData = {
 
 export const fetchUserById = createAsyncThunk(
   'user/fetchUserByIdStatus',
-  async (userId: number) => {
+  async (userId: number, thunkAPI) => {
+  try {
     const response  = await userApi.findUserById(userId.toString());
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const fetchUsersByName = createAsyncThunk(
   'user/fetchUserByNameStatus',
-  async (name: string) => {
+  async (name: string, thunkAPI) => {
+  try {
     const response  = await userApi.getUsersOrGetUserByName(name);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const fetchUserByPlantRecordId = createAsyncThunk(
   'user/fetchUserByPlantRecordId',
-  async (plantRecordId: number) => {
+  async (plantRecordId: number, thunkAPI) => {
+  try {    
     const response  = await userApi.findUserByPlantRecordId(plantRecordId.toString());
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
@@ -55,7 +67,8 @@ export const userSlice = createSlice({
     });
     builder.addCase(fetchUserById.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(fetchUsersByName.pending, (state) => {
       state.status = "pending";
@@ -67,7 +80,8 @@ export const userSlice = createSlice({
     });
     builder.addCase(fetchUsersByName.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(fetchUserByPlantRecordId.pending, (state) => {
       state.status = "pending";
@@ -78,7 +92,8 @@ export const userSlice = createSlice({
     });
     builder.addCase(fetchUserByPlantRecordId.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })

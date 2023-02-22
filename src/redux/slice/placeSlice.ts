@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { PlaceApi, PlaceResponse } from 'botapeer-openapi/typescript-axios';
+import { ErrorResponse, PlaceApi, PlaceResponse } from 'botapeer-openapi/typescript-axios';
 import type { RootState } from 'redux/store/store'
 
 export type PlaceData = {
   data: PlaceResponse | PlaceResponse[] | null;
   status: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
+  error: ErrorResponse | undefined
 };
 
 const initialState: PlaceData = {
@@ -18,9 +18,13 @@ const placeApi = new PlaceApi();
 
 export const fetchPlaces = createAsyncThunk(
   'place/fetchPlaceStatus',
-  async () => {
+  async (_, thunkAPI) => {
+  try {
     const response = await placeApi.getPlaces();
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
   }
 )
 
@@ -39,7 +43,8 @@ export const placeSlice = createSlice({
     });
     builder.addCase(fetchPlaces.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })

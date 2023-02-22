@@ -12,10 +12,11 @@ import { fetchUserByPlantRecordId, selectUser } from "redux/slice/userSlice";
 import Image from "components/Image";
 import SimpleButton from "components/SimpleButton";
 import { useRouter } from "next/router";
-import { PlantRecordResponse } from "botapeer-openapi/typescript-axios";
+import { ErrorResponse, PlantRecordResponse } from "botapeer-openapi/typescript-axios";
 import { toDateTime } from "util/date/dateUtils";
 import { IMAGE_PATH } from "constants/appConstants";
 import Link from "next/link";
+import cookie from 'js-cookie';
 
 const WrapCss = css`
   height: 100%;
@@ -66,12 +67,13 @@ type Props = {
 const PlantRecordView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
   const router = useRouter();
+  const { deletedPostId } = router.query;
+  const [message, setMessage] = useState('');
 
   let latestPost = undefined;
   let sortedPost = undefined;
-  console.log(plantRecord);
   if(plantRecord?.posts && plantRecord?.posts.length > 0) {
     latestPost = plantRecord?.posts.reduce((prev, current) => ((prev?.id ?? 0) > (current?.id ?? 0) ? prev : current));
     sortedPost = plantRecord?.posts.sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
@@ -103,9 +105,17 @@ const PlantRecordView = ({plantRecord}: Props) => {
     router.push(createPlantRecordPage.path + "/" + plantRecord.id + createPlantRecordPostPage.path);
   }
 
+  useEffect(() => {
+    const id = cookie.get('deletedPostId');
+    if (id && id === deletedPostId) {
+      setMessage("削除しました");
+      cookie.remove('deletedPostId');
+    }
+  }, [])
+
   return (
     <PersistLogin>
-      <Layout breadCrumbProps={breadCrumb} errors={errors}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} errorResponse={errors}>
         <div css={WrapCss}>
          <div style={{width: "500px", margin: "0 auto"}}>
           <div>

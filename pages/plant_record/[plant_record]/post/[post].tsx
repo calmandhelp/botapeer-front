@@ -5,18 +5,19 @@ import Divider from "style/Divider";
 import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants";
 import { css } from '@emotion/react';
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
-import { fetchPlantRecordById, selectPlantRecord } from "redux/slice/plantRecordSlice";
-import { Error } from "util/redux/apiBaseUtils";
+import { deletePost, fetchPlantRecordById, selectPlantRecord } from "redux/slice/plantRecordSlice";
+import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { selectAuth } from "redux/slice/authSlice";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 import { API_BASE_URL } from "constants/apiConstants";
 import { toDateTime } from "util/date/dateUtils";
-import { PlantRecordResponse, PostResponse } from "botapeer-openapi/typescript-axios";
+import { ErrorResponse, PlantRecordResponse, PostResponse } from "botapeer-openapi/typescript-axios";
 import Image from "components/Image";
 import PersistLogin from "components/PersistLogin";
 import { IMAGE_PATH } from "constants/appConstants";
+import cookie from 'js-cookie';
 
 const WrapCss = css`
   height: 100%;
@@ -52,7 +53,7 @@ const PlantRecordPostView = ({ post }: Props) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [message, setMessage] = useState('');
   const [article, setArticle] = useState("");
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
   const [files, setFiles] = useState<File[]>();
   const router = useRouter();
   const [fileUrl, setFileUrl] = useState<string | undefined>('');
@@ -87,7 +88,7 @@ const PlantRecordPostView = ({ post }: Props) => {
 
   const handleMessageReset = () => {
     setMessage('');
-    setErrors([]);
+    setErrors(undefined);
   }
 
   useEffect(() => {
@@ -113,13 +114,21 @@ const PlantRecordPostView = ({ post }: Props) => {
       }
   },[files])
 
-  const handleDelete = () => {
-    
+  const handleDelete = async () => {
+    if(post.plantRecordId && post.id) {
+      const deletePostResultAction = await dispatch(deletePost([post.plantRecordId.toString(), post.id.toString(), setupAuthConfig()]));
+      if(deletePost.fulfilled.match(deletePostResultAction)) {
+        cookie.set('deletedPostId', post.id.toString());
+        router.replace({pathname: plantRecordPage.path + post.plantRecordId, query: { deletedPostId: post.id.toString() }});
+      } else {
+        setErrors(deletePostResultAction.payload as ErrorResponse);
+      }
+    }
   }
 
   return (
     <PersistLogin>
-      <Layout breadCrumbProps={breadCrumb} errors={errors}>
+      <Layout breadCrumbProps={breadCrumb} handleMessageReset={handleMessageReset} propMessage={message} errorResponse={errors}>
         <div css={WrapCss}>
          <div style={{width: "500px", margin: "0 auto"}}>
           <div>
@@ -128,7 +137,7 @@ const PlantRecordPostView = ({ post }: Props) => {
          <Divider />
          <div css={InnerCss}>
          <div css={picInfoCss}>
-          <div>{toDateTime(post.createdAt ?? "")}-</div>
+          <div>{toDateTime(post.createdAt ?? "")}</div>
          </div>
           <div style={{position: "relative", margin: "0 auto"}}>
             <Image
@@ -138,7 +147,7 @@ const PlantRecordPostView = ({ post }: Props) => {
               alt="植物"
               />
             <div style={{display: "flex", justifyContent: "flex-end"}}>
-              <DeleteIcon css={{color: '#707070'}} onClick={handleDelete} />
+              <DeleteIcon css={{color: '#707070', cursor: "pointer"}} onClick={handleDelete} />
             </div>
           </div>
           </div>

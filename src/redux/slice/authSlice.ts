@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
 import { getIdByAccessToken } from 'util/redux/apiBaseUtils';
 import { ACCESS_TOKEN } from 'constants/apiConstants';
-import { CreateUserRequest, SignInRequest } from 'botapeer-openapi/typescript-axios';
+import { CreateUserRequest, ErrorResponse, SignInRequest } from 'botapeer-openapi/typescript-axios';
 import { AuthApi } from 'botapeer-openapi/typescript-axios/api/auth-api';
 
 const authApi = new AuthApi();
@@ -15,7 +15,7 @@ type AuthInfo = {
 
 export type AuthData = {
   status: "idle" | "pending" | "succeeded" | "failed",
-  error: undefined | string
+  error: ErrorResponse | undefined
 } & AuthInfo
 
 const initialState: AuthData = {
@@ -28,17 +28,25 @@ const initialState: AuthData = {
 
 export const signIn = createAsyncThunk(
   'auth/signInStatus',
-  async (data: SignInRequest) => {
+  async (data: SignInRequest, thunkAPI) => {
+    try {
     const response = await authApi.signin(data);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const signUp = createAsyncThunk(
   'auth/signUpStatus',
-  async (data: CreateUserRequest) => {
+  async (data: CreateUserRequest, thunkAPI) => {
+    try {
     const response = await authApi.createUser(data);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
@@ -71,7 +79,8 @@ export const authSlice = createSlice({
     });
     builder.addCase(signIn.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })

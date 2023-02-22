@@ -11,6 +11,7 @@ import Button from "components/Button";
 import { Error } from "util/redux/apiBaseUtils";
 import { selectAuthUser } from "redux/slice/authUserSlice";
 import PersistLogin from "components/PersistLogin";
+import { ErrorResponse } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -39,7 +40,7 @@ const PasswordUpdateView = ({}) => {
   const authUser = useAppSelector(selectAuthUser);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
 
   const [disabled, setDisabled] = useState(true);
 
@@ -82,7 +83,7 @@ const PasswordUpdateView = ({}) => {
 
   return (
     <Auth>
-      <Layout breadCrumbProps={breadCrumb} errors={errors}>
+      <Layout breadCrumbProps={breadCrumb} errorResponse={errors}>
         <div css={WrapCss}>
         <h2>{passwordUpdatePage.text}</h2>
         <Divider />

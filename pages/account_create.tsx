@@ -10,6 +10,7 @@ import { Error } from "util/redux/apiBaseUtils";
 import { selectAuthUser } from "redux/slice/authUserSlice";
 import PersistLogin from "components/PersistLogin";
 import { signUp } from "redux/slice/authSlice";
+import { ErrorResponse } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -39,7 +40,7 @@ const AccountCreateView = ({}) => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
   const [message, setMessage] = useState('');
 
   const [disabled, setDisabled] = useState(true);
@@ -57,10 +58,7 @@ const AccountCreateView = ({}) => {
       if(signUp.fulfilled.match(signUpResultAction)) {
           setMessage("登録しました");
       } else {
-        if(signUpResultAction.payload) {
-        } else {
-          setErrors(JSON.parse(signUpResultAction.error.message as any).errors);
-        }
+        setErrors(signUpResultAction.payload as ErrorResponse);
       }
   }
 
@@ -74,7 +72,7 @@ const AccountCreateView = ({}) => {
 
   return (
     <PersistLogin>
-      <Layout breadCrumbProps={breadCrumb} propMessage={message} errors={errors}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} errorResponse={errors}>
         <div css={WrapCss}>
         <h2>{accountCreatePage.text}</h2>
         <Divider />

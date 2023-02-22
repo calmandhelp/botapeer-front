@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { CreatePlantRecordRequest, PlantRecordResponse, PlantRecordApi, CreatePostRequest } from 'botapeer-openapi/typescript-axios';
+import { CreatePlantRecordRequest, PlantRecordResponse, PlantRecordApi, CreatePostRequest, ErrorResponse } from 'botapeer-openapi/typescript-axios';
 import { RootState } from 'redux/store/store'
 import { setupAuthConfig } from 'util/redux/apiBaseUtils';
 import axios from 'axios'
@@ -9,7 +9,7 @@ const plantRecordApi = new PlantRecordApi();
 export type PlantRecordData = {
   data: PlantRecordResponse | PlantRecordResponse[] | null;
   status: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
+  error: ErrorResponse | undefined;
 };
 
 const initialState: PlantRecordData = {
@@ -20,33 +20,61 @@ const initialState: PlantRecordData = {
 
 export const fetchPlantRecordById = createAsyncThunk(
   'plantRecord/fetchPlantRecordByIdStatus',
-  async (plantRecordId: string) => {
+  async (plantRecordId: string, thunkAPI) => {
+    try {
     const response = await plantRecordApi.getPlantRecordById(plantRecordId);
     return response
+    } catch(error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const createPlantRecord = createAsyncThunk(
   'plantRecord/createPlantRecordStatus',
-  async (data: CreatePlantRecordRequest) => {
+  async (data: CreatePlantRecordRequest, thunkAPI) => {
+    try {
     const response = await plantRecordApi.createPlantRecord(data, setupAuthConfig());
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const fetchPlantRecordByUserId = createAsyncThunk(
   'plantRecord/fetchPlantRecordByUserIdStatus',
-  async (userId: number) => {
+  async (userId: number, thunkAPI) => {
+    try {
     const response = await plantRecordApi.getPlantRecordByUserId(userId.toString())
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const createPost = createAsyncThunk(
   'plantRecord/createPost',
-  async (data: Parameters<typeof plantRecordApi.createPost>) => {
+  async (data: Parameters<typeof plantRecordApi.createPost>, thunkAPI) => {
+  try {
     const response = await plantRecordApi.createPost(...data);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const deletePost = createAsyncThunk(
+  'plantRecord/deletePost',
+  async (data: Parameters<typeof plantRecordApi.deletePost>, thunkAPI) => {
+  try {    
+    const response = await plantRecordApi.deletePost(...data);
+    return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
@@ -65,7 +93,8 @@ export const plantRecordSlice = createSlice({
     });
     builder.addCase(fetchPlantRecordById.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(fetchPlantRecordByUserId.pending, (state) => {
       state.status = "pending";
@@ -76,7 +105,8 @@ export const plantRecordSlice = createSlice({
     });
     builder.addCase(fetchPlantRecordByUserId.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(createPlantRecord.pending, (state) => {
       state.status = "pending";
@@ -87,7 +117,8 @@ export const plantRecordSlice = createSlice({
     });
     builder.addCase(createPlantRecord.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(createPost.pending, (state) => {
       state.status = "pending";
@@ -97,7 +128,19 @@ export const plantRecordSlice = createSlice({
     });
     builder.addCase(createPost.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
+    });
+    builder.addCase(deletePost.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(deletePost.fulfilled, (state, action) => {
+      state.status = "succeeded";
+    });
+    builder.addCase(deletePost.rejected, (state, action) => {
+      state.status = "failed";
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })
