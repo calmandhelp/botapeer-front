@@ -6,7 +6,7 @@ import { accountPage, plantRecordPage, rootPage } from "constants/pageConstants"
 import { css } from '@emotion/react';
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
 import { fetchPlantRecordById, selectPlantRecord } from "redux/slice/plantRecordSlice";
-import { deletePost } from "redux/slice/postSlice";
+import { createLikeToPost, deleteLikeToPost, deletePost, fetchPost, selectPost } from "redux/slice/postSlice";
 import { setupAuthConfig } from "util/redux/apiBaseUtils";
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -20,6 +20,7 @@ import Image from "components/Image";
 import PersistLogin from "components/PersistLogin";
 import { IMAGE_PATH } from "constants/appConstants";
 import cookie from 'js-cookie';
+import axios from 'axios';
 
 const WrapCss = css`
   height: 100%;
@@ -43,12 +44,13 @@ const picInfoCss = css`
 `
 
 type Props = {
-  post: PostResponse
+  serverPost: PostResponse
 }  
 
-const PlantRecordPostView = ({ post }: Props) => {
+const PlantRecordPostView = ({ serverPost }: Props) => {
   const dispatch = useAppDispatch();
-  const authUser = useAppSelector(selectAuthUser);
+  const authUser = useAppSelector(selectAuthUser).data;
+  const post = useAppSelector(selectPost).data as PostResponse;
   const plantRecord = useAppSelector(selectPlantRecord);
   const auth = useAppSelector(selectAuth);
   const [title, setTitle] = useState("");
@@ -62,17 +64,17 @@ const PlantRecordPostView = ({ post }: Props) => {
 
   const childPages = [
     {
-    href: rootPage.path + authUser.data?.name,
-    label: authUser.data?.name ? authUser.data?.name + "さんの" + accountPage.text : "",
+    href: rootPage.path + authUser?.name,
+    label: authUser?.name ? authUser?.name + "さんの" + accountPage.text : "",
     },
     {
-    href:  plantRecordPage.path + post.plantRecordId,
-    label: (plantRecord.data as PlantRecordResponse)?.title ?? ""
+    href:  plantRecordPage.path + post?.plantRecordId,
+    label: (plantRecord?.data as PlantRecordResponse)?.title ?? ""
     }
   ]
  
   const currentPage = {
-    label: post.title ?? ""
+    label: post?.title ?? ""
   }
 
   const breadCrumb = {
@@ -100,10 +102,10 @@ const PlantRecordPostView = ({ post }: Props) => {
   },[auth?.userId, dispatch])
 
   useEffect(() => {
-    if(post.plantRecordId) {
+    if(post?.plantRecordId) {
       dispatch(fetchPlantRecordById(post.plantRecordId?.toString()))
     }
-  },[post.plantRecordId])
+  },[post?.plantRecordId])
 
   useEffect(() => {
       if(files && files.length > 0) {
@@ -115,6 +117,14 @@ const PlantRecordPostView = ({ post }: Props) => {
         setFileUrl("");
       }
   },[files])
+
+  useEffect(() => {
+    const plantRecordId = serverPost?.plantRecordId?.toString();
+    const postId = serverPost?.id?.toString();
+    if(plantRecordId && postId) {
+      dispatch(fetchPost([plantRecordId, postId, setupAuthConfig()]));
+    }
+  },[serverPost])
 
   const handleDelete = async () => {
     if(post.plantRecordId && post.id) {
@@ -128,31 +138,56 @@ const PlantRecordPostView = ({ post }: Props) => {
     }
   }
 
+  const handleLike = () => {
+    const plantRecordId = post.plantRecordId;
+    const postId = post.id;
+    const userId = authUser?.id;
+    if(!(plantRecordId && postId && userId)) {
+      return
+    }
+    if(post && post.like?.isLikeWithRequestUser) {
+      dispatch(deleteLikeToPost([
+        plantRecordId.toString(),
+        postId.toString(),
+        userId.toString(),
+        setupAuthConfig()])).then(() => {
+          dispatch(fetchPost([plantRecordId.toString(), postId.toString(), setupAuthConfig()]));
+        })
+    } else {
+      dispatch(createLikeToPost([
+        plantRecordId.toString(),
+        postId.toString(),
+        userId.toString(),
+        setupAuthConfig()])).then(() => {
+          dispatch(fetchPost([plantRecordId.toString(), postId.toString(), setupAuthConfig()]));
+        })
+    }
+  }
   return (
     <PersistLogin>
       <Layout breadCrumbProps={breadCrumb} handleMessageReset={handleMessageReset} propMessage={message} errorResponse={errors}>
         <div css={WrapCss}>
          <div style={{width: "500px", margin: "0 auto"}}>
           <div>
-            <h2>{post.title}</h2>
+            <h2>{post?.title}</h2>
           </div>
          <Divider />
          <div css={InnerCss}>
          <div css={picInfoCss}>
-          <div>{toDateTime(post.createdAt ?? "")}</div>
+          <div>{toDateTime(post?.createdAt ?? "")}</div>
          </div>
           <div style={{position: "relative", margin: "0 auto"}}>
             <Image
-              src={IMAGE_PATH + post?.imageUrl}
+              src={post?.imageUrl ? IMAGE_PATH + post?.imageUrl : ''}
               width={500}
               height={500}
               alt="植物"
               />
             <div style={{display: "flex", justifyContent: "flex-end"}}>
-              <FavoriteIcon css={{color: '#707070', cursor: "pointer"}} />0　
-              <DeleteIcon css={{color: '#707070', cursor: "pointer"}} onClick={handleDelete} />
+              <FavoriteIcon css={{color: post && post?.like?.isLikeWithRequestUser ? 'red' : '#707070', cursor: "pointer"}} onClick={handleLike} />{post && post.like?.count}　
+              <DeleteIcon css={{color:  '#707070', cursor: "pointer"}} onClick={handleDelete} />
             </div>
-            {post.article}
+            {post?.article}
           </div>
           </div>
          </div>
@@ -164,14 +199,15 @@ const PlantRecordPostView = ({ post }: Props) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { post, plant_record } = context.query;
-  const res = await fetch(API_BASE_URL + "posts/" + post + "/plant_records/" + plant_record);
-  const data = await res.json()
+  const res = await axios.get(API_BASE_URL + "posts/" + post + "/plant_records/" + plant_record);
+  const data = res.data
+  console.log(data);
   if(!data || !data.id) {
     return {
       notFound: true
     }
   }
-  return { props: { post: data } }
+  return { props: { serverPost: data } }
 }
 
 export default PlantRecordPostView;

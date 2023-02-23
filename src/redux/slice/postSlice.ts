@@ -6,17 +6,29 @@ import axios from 'axios'
 
 const postApi = new PostApi();
 
-export type PlantRecordData = {
-  data: PostResponse | PlantRecordResponse[] | null;
+export type PostData = {
+  data: PostResponse | PostResponse[] | null;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: ErrorResponse | undefined;
 };
 
-const initialState: PlantRecordData = {
+const initialState: PostData = {
   data: null,
   status: "idle",
   error: undefined,
 };
+
+export const fetchPost = createAsyncThunk(
+  'plantRecord/fetchPost',
+  async (data: Parameters<typeof postApi.getPostByIdAndPlantRecordId>, thunkAPI) => {
+  try {
+    const response = await postApi.getPostByIdAndPlantRecordId(...data);
+    return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
 
 export const createPost = createAsyncThunk(
   'plantRecord/createPost',
@@ -42,12 +54,48 @@ export const deletePost = createAsyncThunk(
   }
 )
 
+export const createLikeToPost = createAsyncThunk(
+  'plantRecord/createLikeToPost',
+  async (data: Parameters<typeof postApi.createLikeToPost>, thunkAPI) => {
+  try {    
+    const response = await postApi.createLikeToPost(...data);
+    return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const deleteLikeToPost = createAsyncThunk(
+  'plantRecord/deleteLikeToPost',
+  async (data: Parameters<typeof postApi.deleteLikeToPost>, thunkAPI) => {
+  try {
+    const response = await postApi.deleteLikeToPost(...data);
+    return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
+
 export const postSlice = createSlice({
   name: 'Post',
   initialState,
   reducers: {
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchPost.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchPost.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.data = action.payload.data;
+    });
+    builder.addCase(fetchPost.rejected, (state, action) => {
+      state.status = "failed";
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
+    });
     builder.addCase(createPost.pending, (state) => {
       state.status = "pending";
     });
@@ -71,9 +119,31 @@ export const postSlice = createSlice({
       const errors = action.payload as ErrorResponse;
       state.error = errors;
     });
+    builder.addCase(createLikeToPost.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(createLikeToPost.fulfilled, (state, action) => {
+      state.status = "succeeded";
+    });
+    builder.addCase(createLikeToPost.rejected, (state, action) => {
+      state.status = "failed";
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
+    });
+    builder.addCase(deleteLikeToPost.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(deleteLikeToPost.fulfilled, (state, action) => {
+      state.status = "succeeded";
+    });
+    builder.addCase(deleteLikeToPost.rejected, (state, action) => {
+      state.status = "failed";
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
+    });
   }
 })
 
-export const selectPlantRecord = (state: RootState) => state.posts
+export const selectPost = (state: RootState) => state.posts
 
 export default postSlice.reducer

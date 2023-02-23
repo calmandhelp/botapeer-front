@@ -83,7 +83,7 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
     const formData = {title, article};
     
     const plantRecordId = plantRecord?.id?.toString() ?? "";
-
+ 
     if(files && files[0]) {
       const createPostAction = await dispatch(createPost([plantRecordId, files[0], formData, setupAuthConfig()]))
       if(createPost.fulfilled.match(createPostAction)) {
