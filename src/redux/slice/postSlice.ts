@@ -1,8 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { PlantRecordResponse, PostApi, ErrorResponse, PostResponse } from 'botapeer-openapi/typescript-axios';
+import { PostApi, ErrorResponse, PostResponse } from 'botapeer-openapi/typescript-axios';
 import { RootState } from 'redux/store/store'
-import { setupAuthConfig } from 'util/redux/apiBaseUtils';
-import axios from 'axios'
 
 const postApi = new PostApi();
 
@@ -20,9 +18,9 @@ const initialState: PostData = {
 
 export const fetchPost = createAsyncThunk(
   'plantRecord/fetchPost',
-  async (data: Parameters<typeof postApi.getPostByIdAndPlantRecordId>, thunkAPI) => {
+  async (data: Parameters<typeof postApi.getPostById>, thunkAPI) => {
   try {
-    const response = await postApi.getPostByIdAndPlantRecordId(...data);
+    const response = await postApi.getPostById(...data);
     return response
   } catch(error: any) {
     return thunkAPI.rejectWithValue(error.response.data);

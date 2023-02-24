@@ -122,13 +122,13 @@ const PlantRecordPostView = ({ serverPost }: Props) => {
     const plantRecordId = serverPost?.plantRecordId?.toString();
     const postId = serverPost?.id?.toString();
     if(plantRecordId && postId) {
-      dispatch(fetchPost([plantRecordId, postId, setupAuthConfig()]));
+      dispatch(fetchPost([postId, setupAuthConfig()]));
     }
   },[serverPost])
 
   const handleDelete = async () => {
     if(post.plantRecordId && post.id) {
-      const deletePostResultAction = await dispatch(deletePost([post.plantRecordId.toString(), post.id.toString(), setupAuthConfig()]));
+      const deletePostResultAction = await dispatch(deletePost([post.id.toString(), setupAuthConfig()]));
       if(deletePost.fulfilled.match(deletePostResultAction)) {
         cookie.set('deletedPostId', post.id.toString());
         router.replace({pathname: plantRecordPage.path + post.plantRecordId, query: { deletedPostId: post.id.toString() }});
@@ -147,19 +147,17 @@ const PlantRecordPostView = ({ serverPost }: Props) => {
     }
     if(post && post.like?.isLikeWithRequestUser) {
       dispatch(deleteLikeToPost([
-        plantRecordId.toString(),
         postId.toString(),
         userId.toString(),
         setupAuthConfig()])).then(() => {
-          dispatch(fetchPost([plantRecordId.toString(), postId.toString(), setupAuthConfig()]));
+          dispatch(fetchPost([postId.toString(), setupAuthConfig()]));
         })
     } else {
       dispatch(createLikeToPost([
-        plantRecordId.toString(),
         postId.toString(),
         userId.toString(),
         setupAuthConfig()])).then(() => {
-          dispatch(fetchPost([plantRecordId.toString(), postId.toString(), setupAuthConfig()]));
+          dispatch(fetchPost([postId.toString(), setupAuthConfig()]));
         })
     }
   }
@@ -198,8 +196,8 @@ const PlantRecordPostView = ({ serverPost }: Props) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { post, plant_record } = context.query;
-  const res = await axios.get(API_BASE_URL + "posts/" + post + "/plant_records/" + plant_record);
+  const { post } = context.query;
+  const res = await axios.get(API_BASE_URL + "posts/" + post);
   const data = res.data
   console.log(data);
   if(!data || !data.id) {

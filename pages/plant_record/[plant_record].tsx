@@ -17,6 +17,7 @@ import { toDateTime } from "util/date/dateUtils";
 import { IMAGE_PATH } from "constants/appConstants";
 import Link from "next/link";
 import cookie from 'js-cookie';
+import { selectAuthUser } from "redux/slice/authUserSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -66,7 +67,8 @@ type Props = {
 
 const PlantRecordView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
+  const authUser = useAppSelector(selectAuthUser).data;
+  const user = useAppSelector(selectUser).data;
   const [errors, setErrors] = useState<ErrorResponse>();
   const router = useRouter();
   const { deletedPostId } = router.query;
@@ -81,8 +83,8 @@ const PlantRecordView = ({plantRecord}: Props) => {
 
   const childPages = [
     {
-    href: rootPage.path + user.data?.name,
-    label: user.data?.name ? user.data?.name + "さんの" + accountPage.text : "",
+    href: rootPage.path + user?.name,
+    label: user?.name ? user?.name + "さんの" + accountPage.text : "",
     }
   ]
 
@@ -125,7 +127,7 @@ const PlantRecordView = ({plantRecord}: Props) => {
          <div css={InnerCss}>
          <div css={picInfoCss}>
           <div>{toDateTime(plantRecord.createdAt ?? "")}-</div>
-          <SimpleButton handleClick={handleCreatePost}>投稿追加</SimpleButton>
+          {authUser?.id == user?.id ? <SimpleButton handleClick={handleCreatePost}>投稿追加</SimpleButton>: null}
          </div>
           <div style={{position: "relative", margin: "0 auto"}}>
             <Image
