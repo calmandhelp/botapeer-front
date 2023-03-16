@@ -1,0 +1,3 @@
+[submodule "src/botapeer-openapi"]
+	path = src/botapeer-openapi
+	url = https://github.com/calmandhelp/botapeer-openapi.git

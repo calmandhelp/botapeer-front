@@ -9,18 +9,19 @@ import { css } from '@emotion/react';
 import Button from "components/Button";
 import { InnerCss } from "style/common";
 import { fetchAuthUserById, selectAuthUser } from "redux/slice/authUserSlice";
-import { createPlantRecord } from "redux/slice/plantRecordSlice";
-import { Error } from "util/redux/apiBaseUtils";
+import { createPost } from "redux/slice/postSlice";
+import { Error, setupAuthConfig } from "util/redux/apiBaseUtils";
 import { selectAuth } from "redux/slice/authSlice";
-import Select, { Option } from "components/Select";
-import { fetchPlaces, selectPlace } from "redux/slice/placeSlice";
-import PersistLogin from "components/PersistLogin";
+import { Option } from "components/Select";
+import { selectPlace } from "redux/slice/placeSlice";
 import { useRouter } from "next/router";
 import { GetServerSidePropsContext } from "next";
 import { API_BASE_URL } from "constants/apiConstants";
-import { PlantRecord } from "model/plantRcord";
 import TextArea from "components/TextArea";
 import FileUploader from "components/FileUploader";
+import { ErrorResponse, PlantRecordResponse } from "botapeer-openapi/typescript-axios";
+import { DropzoneRef } from "react-dropzone";
+import Image from "components/Image";
 
 const WrapCss = css`
   height: 100%;
@@ -39,21 +40,21 @@ const InputsCss = css`
 `
 
 type Props = {
-  plantRecord: PlantRecord
+  plantRecord: PlantRecordResponse
 }  
 
 const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
   const authUser = useAppSelector(selectAuthUser);
   const auth = useAppSelector(selectAuth);
-  const places = useAppSelector(selectPlace);
   const [title, setTitle] = useState("");
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [message, setMessage] = useState('');
-  const [placeId, setPlaceId] = useState(0);
-  const [errors, setErrors] = useState<Error[]>([]);
-  const [options, setOptions] = useState<Option[]>([]);
+  const [article, setArticle] = useState("");
+  const [errors, setErrors] = useState<ErrorResponse>();
+  const [files, setFiles] = useState<File[]>();
   const router = useRouter();
+  const [fileUrl, setFileUrl] = useState<string | undefined>('');
 
   const childPages = [
     {
@@ -76,62 +77,66 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
   }
 
   const handleCreate = async () => {
-    if(!title || !placeId) {
+    if(!title || !article) {
       return
     }
-    const data = {
-      title,
-      placeId
-    }
-    const createPlantRecordAction = await dispatch(createPlantRecord(data))
-    if(createPlantRecord.fulfilled.match(createPlantRecordAction)) {
-      setMessage("作成しました");
-      setTitle("")
-      setPlaceId(0)
-    } else {
-      if(createPlantRecordAction.payload) {
+    const formData = {title, article};
+    
+    const plantRecordId = plantRecord?.id?.toString() ?? "";
+ 
+    if(files && files[0]) {
+      const createPostAction = await dispatch(createPost([plantRecordId, files[0], formData, setupAuthConfig()]))
+      if(createPost.fulfilled.match(createPostAction)) {
+        setMessage("作成しました");
+        setTitle("")
+        setArticle("")
+        setFiles(undefined)
       } else {
-        setErrors(JSON.parse(createPlantRecordAction.error.message as any).errors);
+        setErrors(createPostAction.payload as ErrorResponse);
       }
     }
   }
 
   useEffect(() => {
-    if(!title || !placeId) {
+    if(!title || !article) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
     }
-  },[title, placeId])
+  },[title, article])
 
   const handleMessageReset = () => {
     setMessage('');
-    setErrors([]);
+    setErrors(undefined);
   }
 
   useEffect(() => {
-    dispatch(fetchAuthUserById(auth?.userId))
+    if(auth?.userId) {
+      dispatch(fetchAuthUserById(auth?.userId))
+    }
   },[auth?.userId, dispatch])
 
   useEffect(() => {
-    if(places && Array.isArray(places?.data)) {
-      const op: Option[] = []
-      places?.data.map((place) => {
-        op.push({value: place.id,label: place.name})
-      })
-      setOptions(op);
-    }
-  },[places])
-
+      if(files && files.length > 0) {
+        var _binaryData = [];
+        _binaryData.push(files[0]);
+        const _file = window.URL.createObjectURL(new Blob(_binaryData, {type: "application/zip"}))
+        setFileUrl(_file);
+      } else {
+        setFileUrl("");
+      }
+  },[files])
+ 
   return (
      <Auth>
-        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
+        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errorResponse={errors}>
           <div css={WrapCss}>
           <h2>{createPlantRecordPostPage.text}</h2>
           <Divider />
           <div css={InnerCss}>
             <div css={InputsCss}>
-              <FileUploader /><br /><br />
+              <FileUploader setFiles={setFiles}/><br />
+              {fileUrl ? <><Image src={fileUrl} alt="投稿画像" width={200} height={200} /><br /><br /></> : null}
               <Input
               labelText="タイトル"
               type="text"
@@ -140,8 +145,8 @@ const CreatePlantRecordPostView = ({plantRecord}: Props) => {
               /><br /><br />
               <TextArea
               labelText="投稿内容"
-              handleInput={(e) => setPlaceId(e.target.value)}
-              text={title}
+              handleInput={(e) => setArticle(e.target.value)}
+              text={article}
               /><br /><br />
             <ul>
             </ul>
@@ -160,7 +165,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { plant_record } = context.query;
   const res = await fetch(API_BASE_URL + "plant_records/" + plant_record);
   const data = await res.json()
-  console.log(data);
   if(!data || !data.id) {
     return {
       notFound: true

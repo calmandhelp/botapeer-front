@@ -2,6 +2,7 @@ import React from "react";
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { Snackbar, useTheme } from "@mui/material";
 import { Error } from "util/redux/apiBaseUtils";
+import { ErrorResponse } from "botapeer-openapi/typescript-axios";
 
 const CustomeAlert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -15,10 +16,10 @@ type Props = {
   handleBarClose: () => void
   handleCloseAlert: () => void
   open: boolean
-  errors?: Error[]
+  errorsResponse?: ErrorResponse
 }
 
-const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props) => {
+const Alert = ({message, handleBarClose, open, handleCloseAlert, errorsResponse}: Props) => {
   return(
     <Snackbar
     open={open}
@@ -27,10 +28,10 @@ const Alert = ({message, handleBarClose, open, handleCloseAlert, errors}: Props)
   >
     <CustomeAlert
     onClose={handleCloseAlert}
-    severity={errors?.length == 0 || errors == undefined ? "success" : "error"}
+    severity={errorsResponse?.errors?.length == 0 || errorsResponse?.errors == undefined ? "success" : "error"}
     sx={{ width: '100%', background: 'primary', color: "#fff", fontWeight: "bold" }}>
     { message ?? <></>}
-    { errors?.length != 0 ? errors?.map((e)=> {
+    { errorsResponse?.errors?.length != 0 ? errorsResponse?.errors?.map((e)=> {
       return <>{e.message}<br/></>
     }) : <></>}
   </CustomeAlert>

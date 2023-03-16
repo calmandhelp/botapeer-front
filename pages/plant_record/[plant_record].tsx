@@ -2,17 +2,22 @@ import { useState, useEffect, Context } from "react";
 import { useAppDispatch, useAppSelector } from 'redux/hook';
 import { Layout } from 'Layout/Layout';
 import Divider from "style/Divider";
-import { accountPage, createPlantRecordPage, createPlantRecordPostPage, plantRecordPage, rootPage } from "constants/pageConstants";
+import { accountPage, createPlantRecordPage, createPlantRecordPostPage, makePlantRecordPostPage, plantRecordPage, rootPage } from "constants/pageConstants";
 import { css } from '@emotion/react';
 import { Error } from "util/redux/apiBaseUtils";
 import { API_BASE_URL } from "constants/apiConstants";
 import { GetServerSidePropsContext } from "next";
-import { PlantRecord } from "model/plantRcord";
 import PersistLogin from "components/PersistLogin";
 import { fetchUserByPlantRecordId, selectUser } from "redux/slice/userSlice";
-import Image from "next/image";
+import Image from "components/Image";
 import SimpleButton from "components/SimpleButton";
 import { useRouter } from "next/router";
+import { ErrorResponse, PlantRecordResponse } from "botapeer-openapi/typescript-axios";
+import { toDateTime } from "util/date/dateUtils";
+import { IMAGE_PATH } from "constants/appConstants";
+import Link from "next/link";
+import cookie from 'js-cookie';
+import { selectAuthUser } from "redux/slice/authUserSlice";
 
 const WrapCss = css`
   height: 100%;
@@ -35,20 +40,51 @@ const picInfoCss = css`
   padding: 0 0 10px 0;
 `
 
+const ImageArea = css`
+  .nextImage {
+    flex-direction: column;
+  }
+  .nextImage img {
+    width: 100%;
+  }
+  @media screen and (min-width: 960px) {
+    display: flex;
+    flex-wrap: wrap;
+    li {
+      height: 165px;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      :nth-child(3n - 2) {
+        margin-left: 0px;
+      }
+    }
+  }
+`
+
 type Props = {
-  plantRecord: PlantRecord
+  plantRecord: PlantRecordResponse
 }  
 
 const PlantRecordView = ({plantRecord}: Props) => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectUser);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const authUser = useAppSelector(selectAuthUser).data;
+  const user = useAppSelector(selectUser).data;
+  const [errors, setErrors] = useState<ErrorResponse>();
   const router = useRouter();
+  const { deletedPostId } = router.query;
+  const [message, setMessage] = useState('');
+
+  let latestPost = undefined;
+  let sortedPost = undefined;
+  if(plantRecord?.posts && plantRecord?.posts.length > 0) {
+    latestPost = plantRecord?.posts.reduce((prev, current) => ((prev?.id ?? 0) > (current?.id ?? 0) ? prev : current));
+    sortedPost = plantRecord?.posts.sort((a, b) => (b.id ?? 0) - (a.id ?? 0));
+  }
 
   const childPages = [
     {
-    href: rootPage.path + user.data?.name,
-    label: user.data?.name ? user.data?.name + "さんの" + accountPage.text : "",
+    href: rootPage.path + user?.name,
+    label: user?.name ? user?.name + "さんの" + accountPage.text : "",
     }
   ]
 
@@ -68,12 +104,20 @@ const PlantRecordView = ({plantRecord}: Props) => {
   },[dispatch, plantRecord.id])
 
   const handleCreatePost = () => {
-    router.push(createPlantRecordPage.path + "/" + plantRecord.id + "/" + createPlantRecordPostPage.path);
+    router.push(createPlantRecordPage.path + "/" + plantRecord.id + createPlantRecordPostPage.path);
   }
+
+  useEffect(() => {
+    const id = cookie.get('deletedPostId');
+    if (id && id === deletedPostId) {
+      setMessage("削除しました");
+      cookie.remove('deletedPostId');
+    }
+  }, [])
 
   return (
     <PersistLogin>
-      <Layout breadCrumbProps={breadCrumb} errors={errors}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} errorResponse={errors}>
         <div css={WrapCss}>
          <div style={{width: "500px", margin: "0 auto"}}>
           <div>
@@ -82,17 +126,34 @@ const PlantRecordView = ({plantRecord}: Props) => {
          <Divider />
          <div css={InnerCss}>
          <div css={picInfoCss}>
-          <div>{plantRecord.createdAt?.toString()}-</div>
-          <SimpleButton handleClick={handleCreatePost}>投稿追加</SimpleButton>
+          <div>{toDateTime(plantRecord.createdAt ?? "")}-</div>
+          {authUser?.id == user?.id ? <SimpleButton handleClick={handleCreatePost}>投稿追加</SimpleButton>: null}
          </div>
-          <div style={{position: "relative", width: "500px", height: "500px", margin: "0 auto"}}>
-          <Image
-              src={"/images/no_image.jpg"}
+          <div style={{position: "relative", margin: "0 auto"}}>
+            <Image
+              src={latestPost?.imageUrl ? IMAGE_PATH + latestPost?.imageUrl : "/images/no_image.jpg"}
               width={500}
               height={500}
               alt="植物"
-              css={{ layout: "fill" }}
               />
+              <ul css={ImageArea}>
+              {sortedPost?.map((post, index) => {
+                const plantRecordId = plantRecord.id?.toString() ?? "";
+                const postId = post.id?.toString() ?? "";
+                return (
+                  <li key={index}>
+                    <Link href={makePlantRecordPostPage(plantRecordId, postId).path}>
+                    <Image
+                    src={post.imageUrl ? IMAGE_PATH + post.imageUrl : "/images/no_image.jpg"}
+                    width={160}
+                    height={165}
+                    alt="植物"
+                    />
+                    </Link>
+                  </li>
+                )
+              })}
+              </ul>
           </div>
           </div>
          </div>

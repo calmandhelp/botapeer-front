@@ -1,12 +1,21 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store/store'
-import { signInBase, LoginRequest, AuthInfo, SignUpRequest, signUpBase } from 'util/redux/authUtils';
 import { getIdByAccessToken } from 'util/redux/apiBaseUtils';
 import { ACCESS_TOKEN } from 'constants/apiConstants';
+import { CreateUserRequest, ErrorResponse, SignInRequest } from 'botapeer-openapi/typescript-axios';
+import { AuthApi } from 'botapeer-openapi/typescript-axios/api/auth-api';
+
+const authApi = new AuthApi();
+
+type AuthInfo = {
+ isLogin: boolean,
+ userId: number,
+ accessToken: string,
+};
 
 export type AuthData = {
   status: "idle" | "pending" | "succeeded" | "failed",
-  error: undefined | string
+  error: ErrorResponse | undefined
 } & AuthInfo
 
 const initialState: AuthData = {
@@ -19,17 +28,25 @@ const initialState: AuthData = {
 
 export const signIn = createAsyncThunk(
   'auth/signInStatus',
-  async (data: LoginRequest) => {
-    const response = await signInBase(data);
+  async (data: SignInRequest, thunkAPI) => {
+    try {
+    const response = await authApi.signin(data);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const signUp = createAsyncThunk(
   'auth/signUpStatus',
-  async (data: SignUpRequest) => {
-    const response = await signUpBase(data);
+  async (data: CreateUserRequest, thunkAPI) => {
+    try {
+    const response = await authApi.createUser(data);
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
@@ -54,15 +71,16 @@ export const authSlice = createSlice({
       state.status = "pending";
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
-      localStorage.setItem(ACCESS_TOKEN, action.payload.accessToken);
-      state.accessToken = action.payload.accessToken
-      state.userId = getIdByAccessToken(action.payload.accessToken)
+      localStorage.setItem(ACCESS_TOKEN, action.payload.data.accessToken);
+      state.accessToken = action.payload.data.accessToken
+      state.userId = getIdByAccessToken(action.payload.data.accessToken)
       state.status = "succeeded";
       state.isLogin = true;
     });
     builder.addCase(signIn.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })

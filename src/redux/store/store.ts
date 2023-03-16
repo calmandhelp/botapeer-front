@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import userReducer from 'redux/slice/userSlice'
 import authReducer from 'redux/slice/authSlice'
+import postReducer from 'redux/slice/postSlice'
 import authUserReducer from 'redux/slice/authUserSlice'
 import plantRecordReducer from 'redux/slice/plantRecordSlice'
 import placeReducer from 'redux/slice/placeSlice'
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   authUser: authUserReducer,
   users: userReducer, 
   plantRecords: plantRecordReducer,
+  posts: postReducer,
   places: placeReducer
 });
 

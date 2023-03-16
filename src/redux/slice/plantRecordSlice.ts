@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import type { RootState } from '../store/store'
-import { createPlantRecordBase, fetchPlantRecordByUserIdBase, PlantRecordRequest, PlantRecordResponse } from 'util/redux/plantRecordUtils';
+import { CreatePlantRecordRequest, PlantRecordResponse, PlantRecordApi, CreatePostRequest, ErrorResponse } from 'botapeer-openapi/typescript-axios';
+import { RootState } from 'redux/store/store'
+import { setupAuthConfig } from 'util/redux/apiBaseUtils';
+import axios from 'axios'
+
+const plantRecordApi = new PlantRecordApi();
 
 export type PlantRecordData = {
   data: PlantRecordResponse | PlantRecordResponse[] | null;
   status: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
+  error: ErrorResponse | undefined;
 };
 
 const initialState: PlantRecordData = {
@@ -14,19 +18,39 @@ const initialState: PlantRecordData = {
   error: undefined,
 };
 
+export const fetchPlantRecordById = createAsyncThunk(
+  'plantRecord/fetchPlantRecordByIdStatus',
+  async (plantRecordId: string, thunkAPI) => {
+    try {
+    const response = await plantRecordApi.getPlantRecordById(plantRecordId);
+    return response
+    } catch(error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
+
 export const createPlantRecord = createAsyncThunk(
   'plantRecord/createPlantRecordStatus',
-  async (data: PlantRecordRequest) => {
-    const response = await createPlantRecordBase(data);
+  async (data: CreatePlantRecordRequest, thunkAPI) => {
+    try {
+    const response = await plantRecordApi.createPlantRecord(data, setupAuthConfig());
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const fetchPlantRecordByUserId = createAsyncThunk(
-  'plantRecord/fetchPlantRecordStatus',
-  async (userId: number) => {
-    const response = await fetchPlantRecordByUserIdBase(userId)
+  'plantRecord/fetchPlantRecordByUserIdStatus',
+  async (userId: number, thunkAPI) => {
+    try {
+    const response = await plantRecordApi.getPlantRecordByUserId(userId.toString())
     return response
+  } catch(error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+    }
   }
 )
 
@@ -36,27 +60,41 @@ export const plantRecordSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchPlantRecordById.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchPlantRecordById.fulfilled, (state, action) => {
+      state.data = action.payload.data;
+      state.status = "succeeded";
+    });
+    builder.addCase(fetchPlantRecordById.rejected, (state, action) => {
+      state.status = "failed";
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
+    });
     builder.addCase(fetchPlantRecordByUserId.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(fetchPlantRecordByUserId.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(fetchPlantRecordByUserId.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
     builder.addCase(createPlantRecord.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(createPlantRecord.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.data;
       state.status = "succeeded";
     });
     builder.addCase(createPlantRecord.rejected, (state, action) => {
       state.status = "failed";
-      state.error = action.error.message;
+      const errors = action.payload as ErrorResponse;
+      state.error = errors;
     });
   }
 })

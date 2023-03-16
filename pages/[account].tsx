@@ -19,6 +19,7 @@ import { API_BASE_URL } from "constants/apiConstants";
 import { fetchPlantRecordByUserId, selectPlantRecord } from "redux/slice/plantRecordSlice";
 import PersistLogin from "components/PersistLogin";
 import Link from "next/link";
+import { UserResponse } from "botapeer-openapi/typescript-axios";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -135,7 +136,7 @@ const PlantTitleWrapCss = css `
 `
 
 type Props = {
-  user: User
+  user: UserResponse
 }
 
 const AccountView = ({user}: Props) => {
@@ -165,7 +166,7 @@ const AccountView = ({user}: Props) => {
       if(Array.isArray(plantRecordsData)) {
         return plantRecordsData?.map((plantRecord, index) => {
           const plantRecordId = plantRecord?.id ? plantRecord?.id.toString() : ""
-            if(plantRecord?.posts.length == 0) {
+            if(plantRecord?.posts == undefined || plantRecord?.posts?.length == 0) {
               return <li key={index}>
                 <Link href={plantRecordPage.path + plantRecordId}>
                 <Image
@@ -176,10 +177,11 @@ const AccountView = ({user}: Props) => {
               css={{ objectFit: "cover", cursor: "pointer" }}
               /></Link></li>
             } else {
+              const latestPost = plantRecord?.posts.reduce((prev, current) => ((prev?.id ?? 0) > (current?.id ?? 0) ? prev : current));
               return <li key={index}>
                 <Link href={plantRecordPage.path + plantRecordId}>
                 <Image
-              src={plantRecord?.posts[0]?.image_url ?? "/images/no_image.png"}
+              src={IMAGE_PATH + latestPost.imageUrl ?? "/images/no_image.png"}
               width={180}
               height={180}
               alt="植物"

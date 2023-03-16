@@ -73,11 +73,11 @@ const Header = ({}) => {
     }
     dispatch(signIn(loginRequest))
     .unwrap().then((payload) => {
-      if(payload.accessToken) {
-          const userId = getIdByAccessToken(payload.accessToken);
+      if(payload.data.accessToken) {
+          const userId = getIdByAccessToken(payload.data.accessToken);
           dispatch(fetchAuthUserById(userId))
           .unwrap().then((payload) => 
-            router.push(rootPage.path + payload.name + "?login=true")
+            router.push(rootPage.path + payload.data.name + "?login=true")
           )
         }
     })

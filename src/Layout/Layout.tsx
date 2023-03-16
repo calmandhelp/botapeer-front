@@ -7,11 +7,12 @@ import { useRouter } from 'next/router'
 import BreadCrumbs, { BreadCrumbProps } from "components/BreadCrumbs";
 import Alert from "components/Alert";
 import { Error } from "util/redux/apiBaseUtils";
+import { ErrorResponse } from "botapeer-openapi/typescript-axios";
 
 type Props = {
   children?: ReactNode
   breadCrumbProps?: BreadCrumbProps
-  errors?: Error[]
+  errorResponse?: ErrorResponse
   propMessage?: string
   handleMessageReset?: () => void
 }
@@ -43,7 +44,7 @@ const breadCss = css `
   width: 960px;
 `
 
-export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleMessageReset }: Props) => {
+export const Layout = ({ children, breadCrumbProps, errorResponse, propMessage, handleMessageReset }: Props) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const login = router.query.login;
@@ -67,13 +68,13 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
   },[login, logout, expired])
 
   useEffect(() => {
-    if(errors && errors?.length != 0) {
+    if(errorResponse?.errors && errorResponse?.errors?.length != 0) {
       setOpen(true);
     }
     if(propMessage) {
       setOpen(true);
     }
-  },[errors, propMessage])
+  },[errorResponse, propMessage])
 
   const handleCloseAlert = () => {
     setOpen(false);
@@ -90,7 +91,7 @@ export const Layout = ({ children, breadCrumbProps, errors, propMessage, handleM
         <Alert
           handleCloseAlert={handleCloseAlert}
           message={propMessage ?? message}
-          errors={errors}
+          errorsResponse={errorResponse}
           handleBarClose={handleCloseAlert}
           open={open}
           />

@@ -1,6 +1,7 @@
-import { API_BASE_URL, ACCESS_TOKEN } from 'constants/apiConstants';
 import jwtDecode from 'jwt-decode';
 import { store } from 'redux/store/store';
+import { UserApi, ConfigurationParameters, Configuration} from 'botapeer-openapi/typescript-axios';
+import { AxiosRequestConfig } from 'axios'
 
 export interface Token {
   iat: number,
@@ -60,4 +61,18 @@ export const getIdByAccessToken = (accessToken :string): number => {
 export type Error = {
   code: string,
   message: string
+}
+
+export const setupAuthConfig = () => {
+    const auth = store.getState().auth;
+
+    const token = 'Bearer ' + auth.accessToken;
+
+    const config: AxiosRequestConfig = {
+      headers: {
+        'Authorization': token
+      }
+    };
+
+    return config
 }
