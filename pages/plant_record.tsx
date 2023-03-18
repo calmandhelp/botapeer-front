@@ -15,6 +15,7 @@ import { selectAuth } from "redux/slice/authSlice";
 import Select, { Option } from "components/Select";
 import { fetchPlaces, selectPlace } from "redux/slice/placeSlice";
 import PersistLogin from "components/PersistLogin";
+import { ErrorResponse } from "botapeer-openapi/typescript-axios";
 
 const WrapCss = css`
   height: 100%;
@@ -40,7 +41,7 @@ const CreatePlantRecordView = ({}) => {
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [message, setMessage] = useState('');
   const [placeId, setPlaceId] = useState(0);
-  const [errors, setErrors] = useState<Error[]>([]);
+  const [errors, setErrors] = useState<ErrorResponse>();
   const [options, setOptions] = useState<Option[]>([]);
 
   const childPages = [
@@ -93,26 +94,30 @@ const CreatePlantRecordView = ({}) => {
 
   const handleMessageReset = () => {
     setMessage('');
-    setErrors([]);
+    setErrors(undefined);
   }
 
   useEffect(() => {
-    dispatch(fetchAuthUserById(auth?.userId))
+    if(auth?.userId) {
+      dispatch(fetchAuthUserById(auth?.userId))
+    }
   },[dispatch, auth?.userId])
 
   useEffect(() => {
     if(places && Array.isArray(places?.data)) {
       const op: Option[] = []
       places?.data.map((place) => {
-        op.push({value: place.id,label: place.name})
+        if(place?.id && place?.name) {
+          op.push({value: place.id,label: place.name})
+        }
       })
       setOptions(op);
     }
   },[places])
-
+ 
   return (
      <Auth>
-        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errors={errors}>
+        <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errorResponse={errors}>
           <div css={WrapCss}>
           <h2>{createPlantRecordPage.text}</h2>
           <Divider />
