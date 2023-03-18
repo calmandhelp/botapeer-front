@@ -1,0 +1,4 @@
+build:
+  commands:
+    pre-build:
+      - git submodule update
