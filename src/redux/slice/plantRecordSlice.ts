@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { CreatePlantRecordRequest, PlantRecordResponse, PlantRecordApi, CreatePostRequest, ErrorResponse } from 'botapeer-openapi/typescript-axios';
 import { RootState } from 'redux/store/store'
 import { setupAuthConfig } from 'util/redux/apiBaseUtils';
-import axios from 'axios'
 
 const plantRecordApi = new PlantRecordApi();
 
