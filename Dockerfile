@@ -12,7 +12,7 @@ RUN git clone --branch main --single-branch https://${GITHUB_USER_NAME}:${GITHUB
 
 RUN git submodule update --init
 
-RUN npm install --no-cache --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 
 RUN npm run build
 
