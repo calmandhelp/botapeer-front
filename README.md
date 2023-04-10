@@ -7,7 +7,9 @@ botapeerのフロントエンドのリポジトリです。Next.jsで作られ�
 - css
   - emotion
 - 状態管理
-  - redux-toolkit
+  - redux-toolkit 
+- 本番環境インフラ
+  - App Runnerでホストしています。詳しくは[botapeer-infra](https://github.com/calmandhelp/botapeer-infra)をご確認ください　
 
 ## デザイン
 レスポンシブに関しては工数の関係上対応しておりません。  
