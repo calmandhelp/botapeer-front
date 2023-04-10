@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# botapeer-front
+botapeerのフロントエンドのリポジトリです。Next.jsで作られています。
 
-## Getting Started
+## 基本技術
+- cssフレームワーク
+  - material-ui
+- css
+  - emotion
+- 状態管理
+  - redux-toolkit
 
-First, run the development server:
+## デザイン
+レスポンシブに関しては工数の関係上対応しておりません。  
+デザインに関してはfigmaでざっと行い、あとは作りながら考えています。
+![スクリーンショット 2023-04-11 0 17 14](https://user-images.githubusercontent.com/39892315/230930911-d59eeb4b-8a97-4be5-9e9c-716be0844646.png)
 
-```bash
-npm run dev
-# or
-yarn dev
+## スキーマ駆動開発
+botapeer-openapiで生成されたtypescriptのインターフェースとモデルをsrc/redux/sliceで読み込んでapiの呼び出しを行なっています。
+openapiのサブモジュールはsrc/botapeer-openapiにインストールされます。
+
+## SSR（サーバーサイドレンダリング）
+Next.jsの場合、pages配下のディレクトリ構造はページURLの構造と一致します。ダイナミックルーティングを使用することで、plant_record/[plant_record]のようにするとplant_record/1のように動的にページを変更することが可能になります。  
+基本的にダイナミックルーティングをしている箇所はSSRをしています。これはuseEffectを利用してコンポーネントがマウントされた後に404ページを表示させると、画面が一瞬表示されてしまい、見栄えが悪いからです。
+
+## 認証
+アクセストークンは認証後、ローカルストレージに保存されます。POSTなどのAPI呼び出しを行う際は、ローカルストレージに保存されているアクセストークンをAuthorization Headerに付与してサーバーサイドの認証を行います。　　
+実際には以下のようにauthSliceでローカルストレージに保存されたアクセストークンは管理されているため、認証時にストアから取り出してヘッダーに付与します。
+```typescript
+const headers = new Headers({'Content-Type': 'application/json'})
+  
+const auth = store.getState().auth;
+headers.append('Authorization', 'Bearer ' + auth.accessToken)
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
