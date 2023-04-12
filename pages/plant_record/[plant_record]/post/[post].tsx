@@ -199,7 +199,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { post } = context.query;
   const res = await axios.get(API_BASE_URL + "posts/" + post);
   const data = res.data
-  console.log(data);
   if(!data || !data.id) {
     return {
       notFound: true

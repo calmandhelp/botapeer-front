@@ -17,10 +17,10 @@ const Footer = ({}) => {
   return (
     <footer css={FooterCss}>
       <div css={ContainerCss}>
-      <ul>
+      {/* <ul>
         <li>よくある質問</li>
         <li>お問合せ</li>
-      </ul>
+      </ul> */}
       </div>
     </footer>
   );

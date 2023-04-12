@@ -4,7 +4,6 @@ import { useState } from "react";
 import Input from "components/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import Button from "components/Button";
-import { GoogleLogin } from "react-google-login";
 import Box from "@mui/material/Box";
 import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { selectAuth, signIn } from '../redux/slice/authSlice';
@@ -75,8 +74,6 @@ const LoginModal = (props: Props) => {
   const router = useRouter();
   const auth = useAppSelector(selectAuth);
 
-  const responseGoogle = () => {};
-
   const handleKeyDown = (e: any) => {
     if(e.key == "Enter") {
       props.handleLogin(usernameOrEmail, password)
@@ -100,21 +97,8 @@ const LoginModal = (props: Props) => {
           />
           <h2 id="server-modal-title">ログイン</h2>
           <p css={TextCss}>
-            Googleもしくはアカウント情報の入力でログインできます。
+            アカウント情報の入力でログインできます。
           </p>
-          <a
-            href="http://localhost:8081/oauth2/authorization/google?redirect_uri=http://localhost:3000"
-            css={GoogleLinkCss}
-          >
-            <GoogleLogin
-              clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-              buttonText="Login with Google"
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy={"single_host_origin"}
-              css={GoogleCss}
-            />
-          </a>
           <p id="server-modal-description" css={ModalContentCss}>
             <Input
               labelText="ユーザーIDまたはEmail"

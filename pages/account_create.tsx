@@ -70,9 +70,14 @@ const AccountCreateView = ({}) => {
     }
   },[name, password, email])
 
+  const handleMessageReset = () => {
+    setMessage('');
+    setErrors(undefined);
+  }
+
   return (
     <PersistLogin>
-      <Layout breadCrumbProps={breadCrumb} propMessage={message} errorResponse={errors}>
+      <Layout breadCrumbProps={breadCrumb} propMessage={message} handleMessageReset={handleMessageReset} errorResponse={errors}>
         <div css={WrapCss}>
         <h2>{accountCreatePage.text}</h2>
         <Divider />
