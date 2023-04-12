@@ -250,8 +250,8 @@ const AccountUpdateView = ({}) => {
               handleInput={(e) => handleDesc(e.target.value)}
               text={formData?.description ?? ""}
               /><br /><br />
-              <Link href={passwordUpdatePage.path}>パスワードの更新</Link>
-              <br /><br />
+              {/* <Link href={passwordUpdatePage.path}>パスワードの更新</Link>
+              <br /><br /> */}
             </div>
             <div css={submitAreaCss}> 
               <Button handleClick={handleClick} disabled={disabled}>更新</Button>
