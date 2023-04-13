@@ -96,7 +96,8 @@ const Header = ({}) => {
             handleLogin={handleLogin}
           />
           <Toolbar css={ToolBarCss}>
-            <Link href="/" as="/"><span><Image src="/images/logo.png" width="132" height="37" alt="" /></span></Link>
+            <Link href="/" as="/"><span><Image src="/images/logo.png" width="132" height="37" alt=""
+                priority /></span></Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
               <IconButton
