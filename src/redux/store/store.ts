@@ -1,11 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, Middleware } from '@reduxjs/toolkit'
 import userReducer from 'redux/slice/userSlice'
 import authReducer from 'redux/slice/authSlice'
 import postReducer from 'redux/slice/postSlice'
 import authUserReducer from 'redux/slice/authUserSlice'
 import plantRecordReducer from 'redux/slice/plantRecordSlice'
 import placeReducer from 'redux/slice/placeSlice'
-import logger from 'redux-logger'
 import {combineReducers} from 'redux';
 
 const rootReducer = combineReducers({ 
@@ -17,9 +16,16 @@ const rootReducer = combineReducers({
   places: placeReducer
 });
 
+const middlewares: Middleware[] = [];
+if (process.env.NODE_ENV === 'development') {
+  const { createLogger } = require('redux-logger');
+  const logger = createLogger();
+  middlewares.push(logger);
+}
+
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(middlewares),
   devTools: process.env.NODE_ENV === 'development',
 })
 
