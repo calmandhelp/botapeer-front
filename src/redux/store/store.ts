@@ -20,7 +20,7 @@ const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}).concat(logger),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV === 'development',
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

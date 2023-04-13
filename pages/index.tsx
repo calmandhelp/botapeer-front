@@ -22,7 +22,7 @@ const ListCss = css`
     width: 140px;
     margin: 0 0 30px 20px;
   }
-  li:first-child {
+  li:first-of-type {
     margin: 0;
   }
 `;
@@ -50,6 +50,18 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
+              /><br />
+              <span>2022/12/15-</span>
+            </li>
+            <li>
+              <Image
+                src="/images/image1.jpg"
+                width={140}
+                height={140}
+                alt="植物"
+                css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -70,6 +82,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -80,16 +93,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
-              /><br />
-              <span>2022/12/15-</span>
-            </li>
-            <li>
-              <Image
-                src="/images/image1.jpg"
-                width={140}
-                height={140}
-                alt="植物"
-                css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -105,6 +109,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -115,6 +120,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -125,6 +131,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -135,6 +142,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
@@ -145,6 +153,7 @@ export default function Home() {
                 height={140}
                 alt="植物"
                 css={{ objectFit: "cover" }}
+                priority
               /><br />
               <span>2022/12/15-</span>
             </li>
